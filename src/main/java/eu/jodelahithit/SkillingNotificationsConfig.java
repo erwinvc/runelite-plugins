@@ -40,7 +40,6 @@ public interface SkillingNotificationsConfig extends Config {
         return false;
     }
 
-
     @ConfigSection(
             name = "Extra Delays",
             description = "Set notification delays for individual skills",
