@@ -65,7 +65,7 @@ public class SkillingNotificationsPanel extends PluginPanel {
             String skillIcon = "/skill_icons/" + skill.name().toLowerCase() + ".png";
 
             MaterialTab tab = new MaterialTab(new ImageIcon(ImageUtil.loadImageResource(getClass(), skillIcon)), tabGroup, null);
-            tab.setToolTipText(StringUtils.capitalize(skill.name()));
+            tab.setToolTipText(StringUtils.capitalize(skill.name().toLowerCase()));
             tab.addMouseListener(new MouseAdapter()
             {
                 @Override

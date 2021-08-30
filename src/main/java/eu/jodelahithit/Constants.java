@@ -7,7 +7,7 @@ import java.util.Set;
 import static net.runelite.api.AnimationID.*;
 
 public class Constants {
-    static final Set<Integer> COOKING_ANIMATIONS = ImmutableSet.of(COOKING_FIRE, COOKING_RANGE);
+    static final Set<Integer> COOKING_ANIMATIONS = ImmutableSet.of(COOKING_FIRE, COOKING_RANGE, COOKING_WINE);
     static final Set<Integer> FISHING_ANIMATIONS = ImmutableSet.of(
             FISHING_BARBTAIL_HARPOON,
             FISHING_BAREHAND,
@@ -41,7 +41,7 @@ public class Constants {
             FISHING_PEARL_BARBARIAN_ROD_2,
             FISHING_PEARL_OILY_ROD);
 
-    public static Set<Integer> MINING_ANIMATIONS = ImmutableSet.of(
+    static final Set<Integer> MINING_ANIMATIONS = ImmutableSet.of(
             MINING_BRONZE_PICKAXE,
             MINING_IRON_PICKAXE,
             MINING_STEEL_PICKAXE,
@@ -77,7 +77,7 @@ public class Constants {
             MINING_MOTHERLODE_TRAILBLAZER,
             MINING_MOTHERLODE_CRYSTAL);
 
-    public static Set<Integer> WOODCUTTING_ANIMATIONS = ImmutableSet.of(
+    static final Set<Integer> WOODCUTTING_ANIMATIONS = ImmutableSet.of(
             WOODCUTTING_BRONZE,
             WOODCUTTING_IRON,
             WOODCUTTING_STEEL,
@@ -93,7 +93,7 @@ public class Constants {
             WOODCUTTING_CRYSTAL,
             WOODCUTTING_TRAILBLAZER);
 
-    public static Set<Integer> FLETCHING_ANIMATIONS = ImmutableSet.of(
+    static final Set<Integer> FLETCHING_ANIMATIONS = ImmutableSet.of(
             FLETCHING_BOW_CUTTING,
             FLETCHING_STRING_NORMAL_SHORTBOW,
             FLETCHING_STRING_NORMAL_LONGBOW,
@@ -117,4 +117,34 @@ public class Constants {
             FLETCHING_ATTACH_BOLT_TIPS_TO_DRAGON_BOLT,
             FLETCHING_ATTACH_HEADS,
             FLETCHING_ATTACH_FEATHERS_TO_ARROWSHAFT);
+
+    static final Set<Integer> HERBLORE_ANIMATIONS = ImmutableSet.of(
+            HERBLORE_MAKE_TAR,
+            HERBLORE_POTIONMAKING,
+            HERBLORE_PESTLE_AND_MORTAR
+    );
+
+    static final Set<Integer> CRAFTING_ANIMATIONS = ImmutableSet.of(
+            GEM_CUTTING_OPAL,
+            GEM_CUTTING_JADE,
+            GEM_CUTTING_REDTOPAZ,
+            GEM_CUTTING_SAPPHIRE,
+            GEM_CUTTING_EMERALD,
+            GEM_CUTTING_RUBY,
+            GEM_CUTTING_DIAMOND,
+            GEM_CUTTING_AMETHYST,
+            CRAFTING_GLASSBLOWING,
+            CRAFTING_SPINNING,
+            CRAFTING_LOOM,
+            CRAFTING_BATTLESTAVES,
+            CRAFTING_LEATHER,
+            CRAFTING_POTTERS_WHEEL,
+            CRAFTING_POTTERY_OVEN
+    );
+
+    static final Set<Integer> SMITHING_ANIMATIONS = ImmutableSet.of(
+            SMITHING_ANVIL,
+            SMITHING_SMELTING,
+            SMITHING_CANNONBALL
+    );
 }

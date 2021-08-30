@@ -84,7 +84,7 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     boolean ShouldRenderOverlay() {
-        return config.SelectedSkill() != null && !IsSelectedSkillActive();
+        return config.SelectedSkill() != Skill.NONE && !IsSelectedSkillActive();
     }
 
     int GetExtraDelay(Skill skill) {

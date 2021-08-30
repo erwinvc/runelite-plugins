@@ -13,7 +13,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "selectedSkill",
             name = "Selected skill",
-            description = "The selected skill that will cause a notification when not actively performing it",
+            description = "Select the skill that will cause a notification when not actively performing it",
             position = 0
     )
     default Skill SelectedSkill() {
@@ -30,6 +30,17 @@ public interface SkillingNotificationsConfig extends Config {
         return new Color(1.0f, 0.0f, 0.0f, 1.0f);
     }
 
+    @ConfigItem(
+            keyName = "disableOverlayText",
+            name = "Disable overlay text",
+            description = "Disable the \"Skill Notification\" text on the overlay",
+            position = 1
+    )
+    default boolean DisableOverlayText(){
+        return false;
+    }
+
+
     @ConfigSection(
             name = "Extra Delays",
             description = "Set notification delays for individual skills",
@@ -45,6 +56,17 @@ public interface SkillingNotificationsConfig extends Config {
             section = delays
     )
     default int CookingDelay() {
+        return 0;
+    }
+
+    @ConfigItem(
+            keyName = "CRAFTING",
+            name = "Crafting delay",
+            description = "Add an extra delay before the crafting notification",
+            position = 2,
+            section = delays
+    )
+    default int CraftingDelay() {
         return 0;
     }
 
@@ -71,6 +93,17 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "HERBLORE",
+            name = "Herblore delay",
+            description = "Add an extra delay before the herblore notification",
+            position = 2,
+            section = delays
+    )
+    default int HerbloreDelay() {
+        return 0;
+    }
+
+    @ConfigItem(
             keyName = "MINING",
             name = "Mining delay",
             description = "Add an extra delay before the mining notification",
@@ -89,6 +122,17 @@ public interface SkillingNotificationsConfig extends Config {
             section = delays
     )
     default int WoodcuttingDelay() {
+        return 0;
+    }
+
+    @ConfigItem(
+            keyName = "SMITHING",
+            name = "Smithing delay",
+            description = "Add an extra delay before the smithing notification",
+            position = 2,
+            section = delays
+    )
+    default int SmithingDelay() {
         return 0;
     }
 }

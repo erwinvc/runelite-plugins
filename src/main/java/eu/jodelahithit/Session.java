@@ -24,7 +24,7 @@ public class Session {
     public boolean IsSkillActive(Skill skill) {
         Instant instant = skillInstants.get(skill);
         if (instant != null) {
-            return CheckInstant(instant, 0.1f + Math.max(plugin.GetExtraDelay(skill), 0));
+            return CheckInstant(instant, 0.5f + Math.max(plugin.GetExtraDelay(skill), 0));
         }
         return false;
     }

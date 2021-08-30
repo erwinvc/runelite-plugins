@@ -11,7 +11,10 @@ Custom notification delays can be configured for each skill.
 
 ## Supported skills
 - Cooking
+- Crafting
 - Fishing
 - Fletching
+- Herblore
 - Mining
 - Woodcutting
+- Smithing
