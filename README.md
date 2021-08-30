@@ -20,8 +20,6 @@ Custom notification delays can be configured for each skill.
 - Smithing
 
 ## Feedback
-Feedback and suggestions are always welcome!
+Feel free to contact me on Discord for feedback or suggestions.
 
 Discord: Jodelahithit#0001
-
-I am in the official Runelite Discord server so feel free to contact me.
