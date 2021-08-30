@@ -18,3 +18,10 @@ Custom notification delays can be configured for each skill.
 - Mining
 - Woodcutting
 - Smithing
+
+## Feedback
+Feedback and suggestions are always welcome!
+
+Discord: Jodelahithit#0001
+
+I am in the official Runelite Discord server so feel free to contact me.
