@@ -1,9 +1,6 @@
 package eu.jodelahithit;
 
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.*;
 
 import java.awt.*;
 
@@ -16,27 +13,28 @@ public interface SkillingNotificationsConfig extends Config {
             description = "Select the skill that will cause a notification when not actively performing it",
             position = 0
     )
-    default Skill SelectedSkill() {
+    default Skill selectedSkill() {
         return Skill.NONE;
     }
 
+    @Alpha
     @ConfigItem(
             keyName = "overlayColor",
             name = "Notification color",
             description = "Set the notification overlay color",
             position = 1
     )
-    default Color OverlayColor() {
-        return new Color(1.0f, 0.0f, 0.0f, 1.0f);
+    default Color overlayColor() {
+        return new Color(1.0f, 0.0f, 0.0f, 0.5f);
     }
 
     @ConfigItem(
             keyName = "disableOverlayText",
             name = "Disable overlay text",
             description = "Disable the \"Skill Notification\" text on the overlay",
-            position = 1
+            position = 2
     )
-    default boolean DisableOverlayText(){
+    default boolean disableOverlayText(){
         return false;
     }
 
@@ -54,7 +52,7 @@ public interface SkillingNotificationsConfig extends Config {
             position = 2,
             section = delays
     )
-    default int CookingDelay() {
+    default int cookingDelay() {
         return 0;
     }
 
@@ -65,7 +63,7 @@ public interface SkillingNotificationsConfig extends Config {
             position = 2,
             section = delays
     )
-    default int CraftingDelay() {
+    default int craftingDelay() {
         return 0;
     }
 
@@ -76,7 +74,7 @@ public interface SkillingNotificationsConfig extends Config {
             position = 2,
             section = delays
     )
-    default int FishingDelay() {
+    default int fishingDelay() {
         return 0;
     }
 
@@ -87,7 +85,7 @@ public interface SkillingNotificationsConfig extends Config {
             position = 2,
             section = delays
     )
-    default int FletchingDelay() {
+    default int fletchingDelay() {
         return 0;
     }
 
@@ -98,7 +96,7 @@ public interface SkillingNotificationsConfig extends Config {
             position = 2,
             section = delays
     )
-    default int HerbloreDelay() {
+    default int herbloreDelay() {
         return 0;
     }
 
@@ -109,7 +107,7 @@ public interface SkillingNotificationsConfig extends Config {
             position = 2,
             section = delays
     )
-    default int MiningDelay() {
+    default int miningDelay() {
         return 0;
     }
 
@@ -120,7 +118,7 @@ public interface SkillingNotificationsConfig extends Config {
             position = 2,
             section = delays
     )
-    default int WoodcuttingDelay() {
+    default int woodcuttingDelay() {
         return 0;
     }
 
@@ -131,7 +129,7 @@ public interface SkillingNotificationsConfig extends Config {
             position = 2,
             section = delays
     )
-    default int SmithingDelay() {
+    default int smithingDelay() {
         return 0;
     }
 }

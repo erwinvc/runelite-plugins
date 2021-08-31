@@ -6,7 +6,6 @@ import net.runelite.api.Point;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayUtil;
 import net.runelite.client.util.ColorUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,6 +15,7 @@ public class SkillingNotificationsOverlay extends Overlay {
     private final Client client;
     private final SkillingNotificationsPlugin plugin;
     private final SkillingNotificationsConfig config;
+    private final float TEXT_COLOR_LERP = 0.75f;
 
     @Inject
     private SkillingNotificationsOverlay(Client client, SkillingNotificationsPlugin plugin, SkillingNotificationsConfig config) {
@@ -29,13 +29,16 @@ public class SkillingNotificationsOverlay extends Overlay {
 
     @Override
     public Dimension render(Graphics2D graphics) {
-        if (plugin.ShouldRenderOverlay()) {
+        if (plugin.shouldRenderOverlay()) {
             Color color = graphics.getColor();
-            Color overlayColor = ColorUtil.colorWithAlpha(config.OverlayColor(), 128);
-            graphics.setColor(overlayColor);
+            graphics.setColor(config.overlayColor());
             graphics.fill(new Rectangle(client.getCanvas().getSize()));
             graphics.setColor(color);
-            if(!config.DisableOverlayText())OverlayUtil.renderTextLocation(graphics, new Point(client.getCanvasWidth() / 2, client.getCanvasHeight() / 8), StringUtils.capitalize(plugin.GetSelectedSkill().name().toLowerCase()) + " Notification", ColorUtil.colorLerp(Color.white, overlayColor, 0.75f));
+            if (!config.disableOverlayText()) {
+                Point location = new Point(client.getCanvasWidth() / 2, client.getCanvasHeight() / 8);
+                String skillName = StringUtils.capitalize(plugin.getSelectedSkill().name().toLowerCase()) + " Notification";
+                Utils.renderTextCentered(graphics, location, skillName, ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP));
+            }
         }
         return null;
     }

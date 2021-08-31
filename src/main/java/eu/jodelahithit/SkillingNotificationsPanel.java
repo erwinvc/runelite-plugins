@@ -12,8 +12,12 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 public class SkillingNotificationsPanel extends PluginPanel {
+    private Dictionary<String, BufferedImage> iconsCache = new Hashtable<>();
     private SkillingNotificationsPlugin plugin;
     private MaterialTabGroup tabGroup;
     private JTextArea textLabel;
@@ -48,39 +52,47 @@ public class SkillingNotificationsPanel extends PluginPanel {
         tabGroup = new MaterialTabGroup();
         tabGroup.setLayout(new GridLayout(5, 1, 7, 7));
 
-        RepaintTabs();
+        repaintTabs();
         add(tabGroup, c);
     }
 
     @Override
     public void onActivate() {
-        RepaintTabs();
+        repaintTabs();
     }
 
-    private void RepaintTabs() {
+    private void repaintTabs() {
         tabGroup.removeAll();
         MaterialTab toSelect = null;
         for (Skill skill : Skill.values()) {
             if (skill == Skill.NONE) continue;
             String skillIcon = "/skill_icons/" + skill.name().toLowerCase() + ".png";
 
-            MaterialTab tab = new MaterialTab(new ImageIcon(ImageUtil.loadImageResource(getClass(), skillIcon)), tabGroup, null);
+            MaterialTab tab = new MaterialTab(new ImageIcon(GetIcon(skillIcon)), tabGroup, null);
             tab.setToolTipText(StringUtils.capitalize(skill.name().toLowerCase()));
             tab.addMouseListener(new MouseAdapter()
             {
                 @Override
                 public void mousePressed(MouseEvent mouseEvent)
                 {
-                    if (plugin.GetSelectedSkill() == skill) {
+                    if (plugin.getSelectedSkill() == skill) {
                         tab.unselect();
-                        plugin.SetSkillInConfig(Skill.NONE);
-                    }else plugin.SetSkillInConfig(skill);
+                        plugin.setSkillInConfig(Skill.NONE);
+                    }else plugin.setSkillInConfig(skill);
                 }
             });
 
             tabGroup.addTab(tab);
-            if (plugin.GetSelectedSkill() == skill) toSelect = tab;
+            if (plugin.getSelectedSkill() == skill) toSelect = tab;
         }
         if (toSelect != null) toSelect.select();
+    }
+
+    private BufferedImage GetIcon(String path){
+        BufferedImage iconImage = iconsCache.get(path);
+        if(iconImage != null) return iconImage;
+        iconImage = ImageUtil.loadImageResource(getClass(), path);
+        iconsCache.put(path, iconImage);
+        return iconImage;
     }
 }

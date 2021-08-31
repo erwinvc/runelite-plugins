@@ -11,7 +11,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.config.ConfigPlugin;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -28,18 +27,12 @@ import java.awt.image.BufferedImage;
 public class SkillingNotificationsPlugin extends Plugin {
     private Session session;
 
-    @Inject
-    Client client;
-    @Inject
-    ConfigManager configManager;
-    @Inject
-    SkillingNotificationsConfig config;
-    @Inject
-    OverlayManager overlayManager;
-    @Inject
-    SkillingNotificationsOverlay overlay;
-    @Inject
-    ClientToolbar clientToolbar;
+    @Inject Client client;
+    @Inject ConfigManager configManager;
+    @Inject SkillingNotificationsConfig config;
+    @Inject OverlayManager overlayManager;
+    @Inject SkillingNotificationsOverlay overlay;
+    @Inject ClientToolbar clientToolbar;
 
     private SkillingNotificationsPanel panel;
     private NavigationButton navigationButton;
@@ -74,28 +67,28 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     @Subscribe
     public void onClientTick(ClientTick clientTick) {
-        Skill skill = config.SelectedSkill();
+        Skill skill = config.selectedSkill();
         if (skill != null)
-            if (Utils.IsInAnimation(skill, client)) session.UpdateInstant(skill);
+            if (Utils.isInAnimation(skill, client)) session.updateInstant(skill);
     }
 
-    boolean IsSelectedSkillActive() {
-        return session.IsSkillActive(config.SelectedSkill());
+    public Skill getSelectedSkill() {
+        return config.selectedSkill();
     }
 
-    boolean ShouldRenderOverlay() {
-        return config.SelectedSkill() != Skill.NONE && !IsSelectedSkillActive();
+    boolean isSelectedSkillActive() {
+        return session.isSkillActive(config.selectedSkill());
     }
 
-    int GetExtraDelay(Skill skill) {
+    boolean shouldRenderOverlay() {
+        return config.selectedSkill() != Skill.NONE && !isSelectedSkillActive();
+    }
+
+    int getExtraSkillDelay(Skill skill) {
         return Integer.parseInt(configManager.getConfiguration("Skilling Notifications", skill.name()));
     }
 
-    void SetSkillInConfig(Skill skill) {
+    void setSkillInConfig(Skill skill) {
         configManager.setConfiguration("Skilling Notifications", "selectedSkill", skill);
-    }
-
-    public Skill GetSelectedSkill() {
-        return config.SelectedSkill();
     }
 }

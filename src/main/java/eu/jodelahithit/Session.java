@@ -13,18 +13,18 @@ public class Session {
         this.plugin = plugin;
     }
 
-    private boolean CheckInstant(Instant instant, float timeout) {
+    private boolean checkInstant(Instant instant, float timeout) {
         return Duration.between(instant, Instant.now()).toMillis() < (timeout * 1000);
     }
 
-    public void UpdateInstant(Skill skill) {
+    public void updateInstant(Skill skill) {
         skillInstants.put(skill, Instant.now());
     }
 
-    public boolean IsSkillActive(Skill skill) {
+    public boolean isSkillActive(Skill skill) {
         Instant instant = skillInstants.get(skill);
         if (instant != null) {
-            return CheckInstant(instant, 0.5f + Math.max(plugin.GetExtraDelay(skill), 0));
+            return checkInstant(instant, 0.5f + Math.max(plugin.getExtraSkillDelay(skill), 0));
         }
         return false;
     }
