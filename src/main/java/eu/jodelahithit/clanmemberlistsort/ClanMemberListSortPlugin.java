@@ -42,14 +42,29 @@ public class ClanMemberListSortPlugin extends Plugin {
         return configManager.getConfig(ClanMemberListSortConfig.class);
     }
 
+    @Subscribe
+    public void onConfigChanged(ConfigChanged configChanged) {
+        if (configChanged.getGroup().equals(CONFIG_GROUP) && configChanged.getKey().equals("activeSortType")) {
+            activeSortType = config.activeSortType();
+        }
+    }
+
     @Override
     public void startUp() {
         activeSortType = config.activeSortType();
+        initWidgets();
     }
 
     @Override
     public void shutDown() {
         if (clanMemberListHeaderWidget != null) clanMemberListHeaderWidget.deleteAllChildren();
+    }
+
+    @Subscribe
+    public void onWidgetLoaded(WidgetLoaded event) {
+        if (event.getGroupId() == WidgetInfo.CLAN_MEMBER_LIST.getGroupId()) {
+            initWidgets();
+        }
     }
 
     @Subscribe
@@ -77,13 +92,6 @@ public class ClanMemberListSortPlugin extends Plugin {
 
         for (int i = 0; i < widgets.size(); i++) {
             widgets.get(i).setOriginalYAndRevalidate(WIDGET_HEIGHT * i);
-        }
-    }
-
-    @Subscribe
-    public void onWidgetLoaded(WidgetLoaded event) {
-        if (event.getGroupId() == WidgetInfo.CLAN_MEMBER_LIST.getGroupId()) {
-            initWidgets();
         }
     }
 
@@ -115,7 +123,7 @@ public class ClanMemberListSortPlugin extends Plugin {
         for (SortType type : SortType.values()) {
             if (type.actionIndex == event.getOp()) {
                 activeSortType = type;
-                saveActiveSortTypeToConfig();
+                configManager.setConfiguration(CONFIG_GROUP, "activeSortType", activeSortType);
                 reorderSortButton(type);
                 return;
             }
@@ -130,17 +138,6 @@ public class ClanMemberListSortPlugin extends Plugin {
             if (type == firstType) continue;
             sortButton.setAction(++index, type.name);
             type.actionIndex = index + 1;
-        }
-    }
-
-    private void saveActiveSortTypeToConfig() {
-        configManager.setConfiguration(CONFIG_GROUP, "activeSortType", activeSortType);
-    }
-
-    @Subscribe
-    public void onConfigChanged(ConfigChanged configChanged) {
-        if (configChanged.getGroup().equals(CONFIG_GROUP) && configChanged.getKey().equals("activeSortType")) {
-            activeSortType = config.activeSortType();
         }
     }
 }
