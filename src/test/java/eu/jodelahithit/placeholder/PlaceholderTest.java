@@ -3,7 +3,7 @@ package eu.jodelahithit.placeholder;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
-public class PlaceholderPluginTest
+public class PlaceholderTest
 {
 	public static void main(String[] args) throws Exception
 	{
