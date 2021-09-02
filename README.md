@@ -7,7 +7,8 @@ Right click the button to change the current sorting method (name, rank or world
 <img src="https://i.gyazo.com/d2119dac2052e5341573ccbb4740100d.jpg" alt="image" width="250"/>
 
 ## Known issues
-Sometimes the member list flickers.
+- Sometimes the member list flickers.
+- Constantly sorting the list isn't very performance friendly. I'm looking for ways to improve this.
 
 ## Feedback
 This is the first time I've worked with Widgets and this is only my second Runelite plugin. This means that there's a lot of room for improvements and optimizations. 
