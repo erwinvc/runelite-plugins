@@ -13,18 +13,24 @@ public class ClanMemberListEntry {
         this.icon = icon;
     }
 
-    public void setOriginalY(int y) {
+    public void setOriginalYAndRevalidate(int y) {
         name.setOriginalY(y);
-        world.setOriginalY(y);
-        icon.setOriginalY(y);
-    }
-
-    public void revalidate() {
         name.revalidate();
+        world.setOriginalY(y);
         world.revalidate();
+        icon.setOriginalY(y);
         icon.revalidate();
     }
+
     public int getIconSpriteID(){
         return icon.getSpriteId();
+    }
+
+    public String getPlayerName(){
+        return name.getText().toLowerCase();
+    }
+
+    public String getWorld(){
+        return world.getText();
     }
 }
