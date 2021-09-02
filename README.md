@@ -1,2 +1,1 @@
-# Runelite plugins
-This repository currently contains the Skilling Notifications plugin which can be found on the [skilling-notifications branch](https://github.com/jodelahithit/runelite-plugins/tree/skilling-notifications). 
+# Placeholder
