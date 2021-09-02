@@ -1,13 +1,13 @@
-package eu.jodelahithit.placeholder;
+package eu.jodelahithit.clanlistsort;
 
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
-public class PlaceholderPluginTest
+public class ClanListSortTest
 {
 	public static void main(String[] args) throws Exception
 	{
-		ExternalPluginManager.loadBuiltin(PlaceholderPlugin.class);
+		ExternalPluginManager.loadBuiltin(ClanListSortPlugin.class);
 		RuneLite.main(args);
 	}
 }
