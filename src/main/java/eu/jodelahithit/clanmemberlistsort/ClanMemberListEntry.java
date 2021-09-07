@@ -1,11 +1,17 @@
 package eu.jodelahithit.clanmemberlistsort;
 
+import net.runelite.api.Client;
+import net.runelite.api.clan.ClanChannel;
+import net.runelite.api.clan.ClanChannelMember;
+import net.runelite.api.clan.ClanRank;
+import net.runelite.api.clan.ClanSettings;
 import net.runelite.api.widgets.Widget;
 
 public class ClanMemberListEntry {
     Widget icon;
     Widget name;
     Widget world;
+    ClanRank clanRank = ClanRank.GUEST;
 
     public ClanMemberListEntry(Widget name, Widget world, Widget icon) {
         this.name = name;
@@ -22,15 +28,29 @@ public class ClanMemberListEntry {
         icon.revalidate();
     }
 
-    public int getIconSpriteID(){
+    //#Todo cache clan rank?
+    public void updateClanRank(Client client) {
+        ClanChannel clanChannel = client.getClanChannel();
+        ClanSettings clanSettings = client.getClanSettings();
+        if (clanChannel == null || clanSettings == null) return;
+        ClanChannelMember member = clanChannel.findMember(name.getText());
+        if (member == null) return;
+        clanRank = member.getRank();
+    }
+
+    public int getIconSpriteID() {
         return icon.getSpriteId();
     }
 
-    public String getPlayerName(){
+    public String getPlayerName() {
         return name.getText().toLowerCase();
     }
 
-    public String getWorld(){
+    public String getWorld() {
         return world.getText();
+    }
+
+    public ClanRank getClanRank() {
+        return clanRank;
     }
 }

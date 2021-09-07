@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 
 import net.runelite.api.*;
+import net.runelite.api.clan.*;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.widgets.*;
@@ -15,8 +16,10 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.List;
+import java.util.function.Function;
 
 @PluginDescriptor(
         name = "Clan Member List Sorting",
@@ -32,7 +35,6 @@ public class ClanMemberListSortPlugin extends Plugin {
     private Widget clanMemberListHeaderWidget;
     private Widget clanMemberListsWidget;
     private Widget sortButton;
-    private SortType activeSortType;
 
     @Inject Client client;
     @Inject ClientThread clientThread;
@@ -46,14 +48,15 @@ public class ClanMemberListSortPlugin extends Plugin {
 
     @Subscribe
     public void onConfigChanged(ConfigChanged configChanged) {
-        if (configChanged.getGroup().equals(CONFIG_GROUP) && configChanged.getKey().equals("activeSortType")) {
-            activeSortType = config.activeSortType();
+        if (configChanged.getGroup().equals(CONFIG_GROUP)) {
+            if(configChanged.getKey().equals("reverseSort")) {
+                updateSortButtonSprite();
+            }
         }
     }
 
     @Override
     public void startUp() {
-        activeSortType = config.activeSortType();
         clientThread.invokeLater(this::initWidgets);
     }
 
@@ -76,21 +79,25 @@ public class ClanMemberListSortPlugin extends Plugin {
 
         List<ClanMemberListEntry> widgets = new ArrayList<>();
 
+        //Widgets are always in the same order: name, world, icon
         for (int i = 0; i < containerChildren.length; i += 3) {
             widgets.add(new ClanMemberListEntry(containerChildren[i], containerChildren[i + 1], containerChildren[i + 2]));
         }
 
-        switch (activeSortType) {
+        Comparator<ClanMemberListEntry> comparator = null;
+        switch (config.activeSortType()) {
             case SORT_BY_WORLD:
-                widgets.sort(Comparator.comparing(ClanMemberListEntry::getWorld));
+                comparator = Comparator.comparing(ClanMemberListEntry::getWorld);
                 break;
             case SORT_BY_NAME:
-                widgets.sort(Comparator.comparing(ClanMemberListEntry::getPlayerName));
+                comparator = Comparator.comparing(ClanMemberListEntry::getPlayerName);
                 break;
             case SORT_BY_RANK:
-                widgets.sort(Comparator.comparing(ClanMemberListEntry::getIconSpriteID));
+                widgets.forEach(entry -> entry.updateClanRank(client));
+                comparator = Comparator.comparing(ClanMemberListEntry::getClanRank);
                 break;
         }
+        widgets.sort(config.reverseSort() ? comparator.reversed() : comparator);
 
         for (int i = 0; i < widgets.size(); i++) {
             widgets.get(i).setOriginalYAndRevalidate(WIDGET_HEIGHT * i);
@@ -110,22 +117,31 @@ public class ClanMemberListSortPlugin extends Plugin {
         clanMemberListHeaderWidget.deleteAllChildren();
 
         sortButton = clanMemberListHeaderWidget.createChild(-1, WidgetType.GRAPHIC);
-        reorderSortButton(activeSortType);
+        reorderSortButton(config.activeSortType());
         sortButton.setOriginalY(2);
         sortButton.setOriginalX(2);
         sortButton.setOriginalHeight(16);
         sortButton.setOriginalWidth(16);
-        sortButton.setSpriteId(SpriteID.SCROLLBAR_ARROW_DOWN);
-        sortButton.setOnOpListener((JavaScriptCallback) this::handleSortButton);
+        sortButton.setOnClickListener((JavaScriptCallback) this::handleSortButtonClick);
+        sortButton.setOnOpListener((JavaScriptCallback) this::handleSortButtonOp);
         sortButton.setHasListener(true);
+        updateSortButtonSprite();
         sortButton.revalidate();
     }
 
-    private void handleSortButton(ScriptEvent event) {
+    private void updateSortButtonSprite(){
+        sortButton.setSpriteId(config.reverseSort() ? SpriteID.SCROLLBAR_ARROW_UP : SpriteID.SCROLLBAR_ARROW_DOWN);
+    }
+
+    private void handleSortButtonClick(ScriptEvent event) {
+        configManager.setConfiguration(CONFIG_GROUP, "reverseSort", !config.reverseSort());
+        updateSortButtonSprite();
+    }
+
+    private void handleSortButtonOp(ScriptEvent event) {
         for (SortType type : SortType.values()) {
             if (type.actionIndex == event.getOp()) {
-                activeSortType = type;
-                configManager.setConfiguration(CONFIG_GROUP, "activeSortType", activeSortType);
+                configManager.setConfiguration(CONFIG_GROUP, "activeSortType", type);
                 reorderSortButton(type);
                 return;
             }

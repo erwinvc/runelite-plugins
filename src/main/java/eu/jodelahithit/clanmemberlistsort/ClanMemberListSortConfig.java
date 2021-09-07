@@ -16,4 +16,14 @@ public interface ClanMemberListSortConfig extends Config
     default SortType activeSortType() {
         return SortType.SORT_BY_NAME;
     }
+
+    @ConfigItem(
+            keyName = "reverseSort",
+            name = "Reverse sort method",
+            description = "Reverse the sort method",
+            position = 1
+    )
+    default boolean reverseSort() {
+        return false;
+    }
 }
