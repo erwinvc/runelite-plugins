@@ -8,6 +8,7 @@ import net.runelite.api.*;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.widgets.*;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -34,6 +35,7 @@ public class ClanMemberListSortPlugin extends Plugin {
     private SortType activeSortType;
 
     @Inject Client client;
+    @Inject ClientThread clientThread;
     @Inject ConfigManager configManager;
     @Inject ClanMemberListSortConfig config;
 
@@ -52,7 +54,7 @@ public class ClanMemberListSortPlugin extends Plugin {
     @Override
     public void startUp() {
         activeSortType = config.activeSortType();
-        initWidgets();
+        clientThread.invokeLater(this::initWidgets);
     }
 
     @Override
