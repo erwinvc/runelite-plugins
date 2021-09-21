@@ -30,6 +30,7 @@ public class SkillingNotificationsOverlay extends Overlay {
     @Override
     public Dimension render(Graphics2D graphics) {
         if (plugin.shouldRenderOverlay()) {
+            if(config.flash() && client.getGameCycle() % 40 >= 20) return null;
             Color color = graphics.getColor();
             graphics.setColor(config.overlayColor());
             graphics.fill(new Rectangle(client.getCanvas().getSize()));

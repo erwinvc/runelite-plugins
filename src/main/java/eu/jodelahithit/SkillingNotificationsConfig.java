@@ -29,19 +29,29 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "notificationFlash",
+            name = "Notification flash",
+            description = "Flash the idle overlay",
+            position = 2
+    )
+    default boolean flash() {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "disableOverlayText",
             name = "Disable overlay text",
             description = "Disable the \"Skill Notification\" text on the overlay",
-            position = 2
+            position = 3
     )
-    default boolean disableOverlayText(){
+    default boolean disableOverlayText() {
         return false;
     }
 
     @ConfigSection(
             name = "Extra Delays",
             description = "Set notification delays for individual skills",
-            position = 2
+            position = 4
     )
     String delays = "Extra Delays";
 
@@ -49,7 +59,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "COOKING",
             name = "Cooking delay",
             description = "Add an extra delay before the cooking notification",
-            position = 2,
+            position = 5,
             section = delays
     )
     default int cookingDelay() {
@@ -60,7 +70,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "CRAFTING",
             name = "Crafting delay",
             description = "Add an extra delay before the crafting notification",
-            position = 2,
+            position = 6,
             section = delays
     )
     default int craftingDelay() {
@@ -71,7 +81,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "FISHING",
             name = "Fishing delay",
             description = "Add an extra delay before the fishing notification",
-            position = 2,
+            position = 7,
             section = delays
     )
     default int fishingDelay() {
@@ -82,7 +92,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "FLETCHING",
             name = "Fletching delay",
             description = "Add an extra delay before the fletching notification",
-            position = 2,
+            position = 8,
             section = delays
     )
     default int fletchingDelay() {
@@ -93,7 +103,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "HERBLORE",
             name = "Herblore delay",
             description = "Add an extra delay before the herblore notification",
-            position = 2,
+            position = 9,
             section = delays
     )
     default int herbloreDelay() {
@@ -104,7 +114,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "MINING",
             name = "Mining delay",
             description = "Add an extra delay before the mining notification",
-            position = 2,
+            position = 10,
             section = delays
     )
     default int miningDelay() {
@@ -115,7 +125,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "WOODCUTTING",
             name = "Woodcutting delay",
             description = "Add an extra delay before the woodcutting notification",
-            position = 2,
+            position = 11,
             section = delays
     )
     default int woodcuttingDelay() {
@@ -126,7 +136,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "SMITHING",
             name = "Smithing delay",
             description = "Add an extra delay before the smithing notification",
-            position = 2,
+            position = 12,
             section = delays
     )
     default int smithingDelay() {
