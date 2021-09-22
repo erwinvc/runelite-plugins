@@ -5,7 +5,6 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 
 import net.runelite.api.*;
-import net.runelite.api.clan.*;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.widgets.*;
@@ -16,10 +15,8 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.List;
-import java.util.function.Function;
 
 @PluginDescriptor(
         name = "Clan Member List Sorting",
@@ -38,7 +35,6 @@ public class ClanMemberListSortPlugin extends Plugin {
 
     @Inject Client client;
     @Inject ClientThread clientThread;
-    @Inject ConfigManager configManager;
     @Inject ClanMemberListSortConfig config;
 
     @Provides
@@ -134,14 +130,14 @@ public class ClanMemberListSortPlugin extends Plugin {
     }
 
     private void handleSortButtonClick(ScriptEvent event) {
-        configManager.setConfiguration(CONFIG_GROUP, "reverseSort", !config.reverseSort());
+        config.reverseSort(!config.reverseSort());
         updateSortButtonSprite();
     }
 
     private void handleSortButtonOp(ScriptEvent event) {
         for (SortType type : SortType.values()) {
             if (type.actionIndex == event.getOp()) {
-                configManager.setConfiguration(CONFIG_GROUP, "activeSortType", type);
+                config.activeSortType(type);
                 reorderSortButton(type);
                 return;
             }
