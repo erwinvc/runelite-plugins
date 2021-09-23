@@ -71,6 +71,8 @@ public class ClanMemberListSortPlugin extends Plugin {
     @Subscribe
     public void onScriptPostFired(ScriptPostFired event) {
         if (event.getScriptId() != UNK_CLAN_TAB_SCRIPT) return;
+        if(clanMemberListsWidget == null) return;
+
         Widget[] containerChildren = clanMemberListsWidget.getDynamicChildren();
 
         List<ClanMemberListEntry> widgets = new ArrayList<>();
@@ -100,16 +102,12 @@ public class ClanMemberListSortPlugin extends Plugin {
         }
     }
 
-    private boolean isClanMemberListHidden() {
-        Widget widget = client.getWidget(WidgetInfo.CLAN_MEMBER_LIST.getGroupId(), 0);
-        return widget == null || widget.isHidden();
-    }
-
     private void initWidgets() {
-        if (isClanMemberListHidden()) return;
-
         clanMemberListsWidget = client.getWidget(WidgetInfo.CLAN_MEMBER_LIST);
         clanMemberListHeaderWidget = client.getWidget(WidgetInfo.CLAN_MEMBER_LIST.getGroupId(), 0);
+
+        if(clanMemberListHeaderWidget == null) return;
+
         clanMemberListHeaderWidget.deleteAllChildren();
 
         sortButton = clanMemberListHeaderWidget.createChild(-1, WidgetType.GRAPHIC);

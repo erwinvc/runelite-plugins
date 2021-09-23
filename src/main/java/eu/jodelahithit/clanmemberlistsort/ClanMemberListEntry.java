@@ -35,6 +35,10 @@ public class ClanMemberListEntry {
         icon.revalidate();
     }
 
+    private String removeIconFromName(String name){
+        return name.replaceAll("( <img=[0-9]+>)", "");
+    }
+
     //#Todo cache clan rank?
     public void updateClanRank(Client client) {
         ClanChannel clanChannel = client.getClanChannel();
@@ -48,7 +52,7 @@ public class ClanMemberListEntry {
             debugClanSettings(clanChannel);
             return;
         }
-        ClanChannelMember member = clanChannel.findMember(name.getText());
+        ClanChannelMember member = clanChannel.findMember(removeIconFromName(name.getText()));
         if (member == null) {
             debugClanMember(clanChannel, clanSettings);
             return;
