@@ -34,8 +34,8 @@ public interface WintertodtNotificationsConfig extends Config
     @ConfigItem(
             keyName = "disableOverlayText",
             name = "Disable overlay text",
-            description = "Disable the \"Skill Notification\" text on the overlay",
-            position = 3
+            description = "Disable the \"Wintertodt Notification\" text on the overlay",
+            position = 2
     )
     default boolean disableOverlayText() {
         return false;
