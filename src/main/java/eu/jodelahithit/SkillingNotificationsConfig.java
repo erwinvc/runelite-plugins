@@ -6,17 +6,6 @@ import java.awt.*;
 
 @ConfigGroup("Skilling Notifications")
 public interface SkillingNotificationsConfig extends Config {
-
-    @ConfigItem(
-            keyName = "selectedSkill",
-            name = "Selected skill",
-            description = "Select the skill that will cause a notification when not actively performing it",
-            position = 0
-    )
-    default Skill selectedSkill() {
-        return Skill.NONE;
-    }
-
     @Alpha
     @ConfigItem(
             keyName = "overlayColor",
@@ -48,18 +37,124 @@ public interface SkillingNotificationsConfig extends Config {
         return false;
     }
 
+    @ConfigItem(
+            keyName = "disableWhenWalking",
+            name = "Disable overlay while walking",
+            description = "Disable the idle overlay when the player is walking or running",
+            position = 4
+    )
+    default boolean disableWhenWalking() {
+        return true;
+    }
+
+    @ConfigSection(
+            name = "Selected skills",
+            description = "Set the selected skills that will cause a notification when idling",
+            position = 20
+    )
+    String selectedSkills = "Selected skills";
+
+    @ConfigItem(
+            keyName = "COOKING",
+            name = "Cooking",
+            description = "Causes notifications when the player is not actively cooking",
+            position = 21,
+            section = selectedSkills
+    )
+    default boolean cooking() {
+        return false;
+    }
+
+
+    @ConfigItem(
+            keyName = "CRAFTING",
+            name = "Crafting",
+            description = "Causes notifications when the player is not actively crafting",
+            position = 22,
+            section = selectedSkills
+    )
+    default boolean crafting() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "FISHING",
+            name = "Fishing",
+            description = "Causes notifications when the player is not actively fishing",
+            position = 23,
+            section = selectedSkills
+    )
+    default boolean fishing() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "FLETCHING",
+            name = "Fletching ",
+            description = "Causes notifications when the player is not actively fletching",
+            position = 24,
+            section = selectedSkills
+    )
+    default boolean fletching() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "HERBLORE",
+            name = "Herblore",
+            description = "Causes notifications when the player is not actively doing herblore",
+            position = 25,
+            section = selectedSkills
+    )
+    default boolean herblore() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "MINING",
+            name = "Mining",
+            description = "Causes notifications when the player is not actively mining",
+            position = 26,
+            section = selectedSkills
+    )
+    default boolean mining() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "WOODCUTTING",
+            name = "Woodcutting",
+            description = "Causes notifications when the player is not actively woodcutting",
+            position = 27,
+            section = selectedSkills
+    )
+    default boolean woodcutting() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "SMITHING",
+            name = "Smithing",
+            description = "Causes notifications when the player is not actively smithing",
+            position = 28,
+            section = selectedSkills
+    )
+    default boolean smithing() {
+        return false;
+    }
+
     @ConfigSection(
             name = "Extra Delays",
-            description = "Set notification delays for individual skills",
-            position = 4
+            description = "Set notification delays for individual skills. This means that it'll take longer for the notification to appear after the player started idling",
+            position = 50
     )
     String delays = "Extra Delays";
 
     @ConfigItem(
-            keyName = "COOKING",
+            keyName = "COOKINGDELAY",
             name = "Cooking delay",
             description = "Add an extra delay before the cooking notification",
-            position = 5,
+            position = 51,
             section = delays
     )
     default int cookingDelay() {
@@ -67,10 +162,10 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "CRAFTING",
+            keyName = "CRAFTINGDELAY",
             name = "Crafting delay",
             description = "Add an extra delay before the crafting notification",
-            position = 6,
+            position = 52,
             section = delays
     )
     default int craftingDelay() {
@@ -78,10 +173,10 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "FISHING",
+            keyName = "FISHINGDELAY",
             name = "Fishing delay",
             description = "Add an extra delay before the fishing notification",
-            position = 7,
+            position = 53,
             section = delays
     )
     default int fishingDelay() {
@@ -89,10 +184,10 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "FLETCHING",
+            keyName = "FLETCHINGDELAY",
             name = "Fletching delay",
             description = "Add an extra delay before the fletching notification",
-            position = 8,
+            position = 54,
             section = delays
     )
     default int fletchingDelay() {
@@ -100,10 +195,10 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "HERBLORE",
+            keyName = "HERBLOREDELAY",
             name = "Herblore delay",
             description = "Add an extra delay before the herblore notification",
-            position = 9,
+            position = 55,
             section = delays
     )
     default int herbloreDelay() {
@@ -111,10 +206,10 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "MINING",
+            keyName = "MININGDELAY",
             name = "Mining delay",
             description = "Add an extra delay before the mining notification",
-            position = 10,
+            position = 56,
             section = delays
     )
     default int miningDelay() {
@@ -122,10 +217,10 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "WOODCUTTING",
+            keyName = "WOODCUTTINGDELAY",
             name = "Woodcutting delay",
             description = "Add an extra delay before the woodcutting notification",
-            position = 11,
+            position = 57,
             section = delays
     )
     default int woodcuttingDelay() {
@@ -133,10 +228,10 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "SMITHING",
+            keyName = "SMITHINGDELAY",
             name = "Smithing delay",
             description = "Add an extra delay before the smithing notification",
-            position = 12,
+            position = 58,
             section = delays
     )
     default int smithingDelay() {

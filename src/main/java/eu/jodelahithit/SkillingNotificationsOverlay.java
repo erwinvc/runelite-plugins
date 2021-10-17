@@ -37,8 +37,7 @@ public class SkillingNotificationsOverlay extends Overlay {
             graphics.setColor(color);
             if (!config.disableOverlayText()) {
                 Point location = new Point(client.getCanvasWidth() / 2, client.getCanvasHeight() / 8);
-                String skillName = StringUtils.capitalize(plugin.getSelectedSkill().name().toLowerCase()) + " Notification";
-                Utils.renderTextCentered(graphics, location, skillName, ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP));
+                Utils.renderTextCentered(graphics, location, "Skilling Notification", ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP));
             }
         }
         return null;

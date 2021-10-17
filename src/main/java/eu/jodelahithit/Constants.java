@@ -75,7 +75,9 @@ public class Constants {
             MINING_TRAILBLAZER_PICKAXE_3,
             MINING_MOTHERLODE_DRAGON_OR_TRAILBLAZER,
             MINING_MOTHERLODE_TRAILBLAZER,
-            MINING_MOTHERLODE_CRYSTAL);
+            MINING_MOTHERLODE_CRYSTAL,
+            DENSE_ESSENCE_CHIPPING
+    );
 
     static final Set<Integer> WOODCUTTING_ANIMATIONS = ImmutableSet.of(
             WOODCUTTING_BRONZE,
@@ -139,7 +141,8 @@ public class Constants {
             CRAFTING_BATTLESTAVES,
             CRAFTING_LEATHER,
             CRAFTING_POTTERS_WHEEL,
-            CRAFTING_POTTERY_OVEN
+            CRAFTING_POTTERY_OVEN,
+            DENSE_ESSENCE_CHISELING
     );
 
     static final Set<Integer> SMITHING_ANIMATIONS = ImmutableSet.of(

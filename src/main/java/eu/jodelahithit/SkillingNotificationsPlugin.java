@@ -6,9 +6,12 @@ import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.Player;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.ClientTick;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -17,6 +20,9 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @PluginDescriptor(
@@ -25,23 +31,31 @@ import java.awt.image.BufferedImage;
         description = "Provides visual notifications when no longer actively performing the selected skill"
 )
 public class SkillingNotificationsPlugin extends Plugin {
+    private LocalPoint lastPlayerLocation;
     private Session session;
-
-    @Inject Client client;
-    @Inject ConfigManager configManager;
-    @Inject SkillingNotificationsConfig config;
-    @Inject OverlayManager overlayManager;
-    @Inject SkillingNotificationsOverlay overlay;
-    @Inject ClientToolbar clientToolbar;
-
     private SkillingNotificationsPanel panel;
     private NavigationButton navigationButton;
+    private List<Skill> selectedSkills = new ArrayList<>();
+
+    @Inject
+    Client client;
+    @Inject
+    ConfigManager configManager;
+    @Inject
+    SkillingNotificationsConfig config;
+    @Inject
+    OverlayManager overlayManager;
+    @Inject
+    SkillingNotificationsOverlay overlay;
+    @Inject
+    ClientToolbar clientToolbar;
 
     public final BufferedImage ICON = ImageUtil.loadImageResource(SkillingNotificationsPlugin.class, "icon.png");
 
     @Override
     protected void startUp() throws Exception {
-        panel = new SkillingNotificationsPanel(this);
+        updateSelectedSkills();
+        panel = new SkillingNotificationsPanel(this, configManager);
         navigationButton = NavigationButton.builder()
                 .tooltip("Skilling Notifications")
                 .icon(ICON).priority(10).panel(panel)
@@ -67,25 +81,54 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     @Subscribe
     public void onClientTick(ClientTick clientTick) {
-        Skill skill = config.selectedSkill();
-        if (skill != null)
+        for(Skill skill : selectedSkills) {
             if (Utils.isInAnimation(skill, client)) session.updateInstant(skill);
+        }
+
+        Player player = client.getLocalPlayer();
+        if (player != null) {
+            LocalPoint playerLocation = player.getLocalLocation();
+            if (!playerLocation.equals(lastPlayerLocation)) {
+                session.updateWalkingInstant();
+            }
+            lastPlayerLocation = playerLocation;
+        }
     }
 
-    public Skill getSelectedSkill() {
-        return config.selectedSkill();
+    @Subscribe
+    public void onConfigChanged(ConfigChanged configChanged){
+        if (configChanged.getGroup().equals("Skilling Notifications")) {
+            updateSelectedSkills();
+        }
     }
 
-    boolean isSelectedSkillActive() {
-        return session.isSkillActive(config.selectedSkill());
+    boolean areSelectedSkillsActive() {
+        boolean isActive = false;
+        for(Skill skill : selectedSkills){
+            isActive |= session.isSkillActive(skill);
+        }
+        return isActive;
     }
 
     boolean shouldRenderOverlay() {
-        return config.selectedSkill() != Skill.NONE && !isSelectedSkillActive();
+        return selectedSkills.size() != 0 && !areSelectedSkillsActive() && !(config.disableWhenWalking() && session.isWalking());
+    }
+
+    public List<Skill> getSelectedSkills() {
+        return selectedSkills;
+    }
+
+    void updateSelectedSkills() {
+        selectedSkills.clear();
+        for (Skill skill : Skill.values()) {
+            if (Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", skill.name().toUpperCase()))) {
+                selectedSkills.add(skill);
+            }
+        }
     }
 
     int getExtraSkillDelay(Skill skill) {
-        return Integer.parseInt(configManager.getConfiguration("Skilling Notifications", skill.name()));
+        return Integer.parseInt(configManager.getConfiguration("Skilling Notifications", skill.name() + "DELAY"));
     }
 
     void setSkillInConfig(Skill skill) {

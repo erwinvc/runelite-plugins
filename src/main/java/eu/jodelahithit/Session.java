@@ -8,6 +8,7 @@ import java.util.Hashtable;
 public class Session {
     private Dictionary<Skill, Instant> skillInstants = new Hashtable<>();
     private SkillingNotificationsPlugin plugin;
+    private Instant walkingInstant = Instant.now();
 
     public Session(SkillingNotificationsPlugin plugin) {
         this.plugin = plugin;
@@ -27,5 +28,13 @@ public class Session {
             return checkInstant(instant, 0.5f + Math.max(plugin.getExtraSkillDelay(skill), 0));
         }
         return false;
+    }
+
+    public void updateWalkingInstant(){
+        walkingInstant = Instant.now();
+    }
+
+    public boolean isWalking(){
+       return checkInstant(walkingInstant, 1.0f);
     }
 }
