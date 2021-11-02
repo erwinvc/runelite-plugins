@@ -89,10 +89,21 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "FIREMAKING",
+            name = "Firemaking",
+            description = "Causes notifications when the player is not actively firemaking",
+            position = 24,
+            section = selectedSkills
+    )
+    default boolean firemaking() {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "FLETCHING",
             name = "Fletching ",
             description = "Causes notifications when the player is not actively fletching",
-            position = 24,
+            position = 25,
             section = selectedSkills
     )
     default boolean fletching() {
@@ -103,7 +114,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "HERBLORE",
             name = "Herblore",
             description = "Causes notifications when the player is not actively doing herblore",
-            position = 25,
+            position = 26,
             section = selectedSkills
     )
     default boolean herblore() {
@@ -114,7 +125,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "MINING",
             name = "Mining",
             description = "Causes notifications when the player is not actively mining",
-            position = 26,
+            position = 27,
             section = selectedSkills
     )
     default boolean mining() {
@@ -125,7 +136,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "WOODCUTTING",
             name = "Woodcutting",
             description = "Causes notifications when the player is not actively woodcutting",
-            position = 27,
+            position = 28,
             section = selectedSkills
     )
     default boolean woodcutting() {
@@ -136,7 +147,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "SMITHING",
             name = "Smithing",
             description = "Causes notifications when the player is not actively smithing",
-            position = 28,
+            position = 29,
             section = selectedSkills
     )
     default boolean smithing() {
@@ -184,10 +195,21 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "FIREMAKINGDELAY",
+            name = "Firemaking delay",
+            description = "Add an extra delay before the firemaking notification",
+            position = 54,
+            section = delays
+    )
+    default int firemakingDelay() {
+        return 0;
+    }
+
+    @ConfigItem(
             keyName = "FLETCHINGDELAY",
             name = "Fletching delay",
             description = "Add an extra delay before the fletching notification",
-            position = 54,
+            position = 55,
             section = delays
     )
     default int fletchingDelay() {
@@ -198,7 +220,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "HERBLOREDELAY",
             name = "Herblore delay",
             description = "Add an extra delay before the herblore notification",
-            position = 55,
+            position = 56,
             section = delays
     )
     default int herbloreDelay() {
@@ -209,7 +231,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "MININGDELAY",
             name = "Mining delay",
             description = "Add an extra delay before the mining notification",
-            position = 56,
+            position = 57,
             section = delays
     )
     default int miningDelay() {
@@ -220,7 +242,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "WOODCUTTINGDELAY",
             name = "Woodcutting delay",
             description = "Add an extra delay before the woodcutting notification",
-            position = 57,
+            position = 58,
             section = delays
     )
     default int woodcuttingDelay() {
@@ -231,7 +253,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "SMITHINGDELAY",
             name = "Smithing delay",
             description = "Add an extra delay before the smithing notification",
-            position = 58,
+            position = 59,
             section = delays
     )
     default int smithingDelay() {

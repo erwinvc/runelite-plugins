@@ -8,6 +8,7 @@ import static net.runelite.api.AnimationID.*;
 
 public class Constants {
     static final Set<Integer> COOKING_ANIMATIONS = ImmutableSet.of(COOKING_FIRE, COOKING_RANGE, COOKING_WINE);
+    static final Set<Integer> FIREMAKING_ANIMATIONS = ImmutableSet.of(FIREMAKING);
     static final Set<Integer> FISHING_ANIMATIONS = ImmutableSet.of(
             FISHING_BARBTAIL_HARPOON,
             FISHING_BAREHAND,
@@ -142,7 +143,8 @@ public class Constants {
             CRAFTING_LEATHER,
             CRAFTING_POTTERS_WHEEL,
             CRAFTING_POTTERY_OVEN,
-            DENSE_ESSENCE_CHISELING
+            DENSE_ESSENCE_CHISELING,
+            SMITHING_SMELTING
     );
 
     static final Set<Integer> SMITHING_ANIMATIONS = ImmutableSet.of(

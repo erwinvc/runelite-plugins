@@ -84,7 +84,6 @@ public class SkillingNotificationsPlugin extends Plugin {
         for(Skill skill : selectedSkills) {
             if (Utils.isInAnimation(skill, client)) session.updateInstant(skill);
         }
-
         Player player = client.getLocalPlayer();
         if (player != null) {
             LocalPoint playerLocation = player.getLocalLocation();

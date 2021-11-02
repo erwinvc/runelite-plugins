@@ -45,7 +45,7 @@ public class SkillingNotificationsPanel extends PluginPanel {
         welcomeText.setHorizontalAlignment(JLabel.CENTER);
 
         group = new JPanel();
-        group.setLayout(new GridLayout(4, 1, 7, 7));
+        group.setLayout(new GridLayout(3, 3 , 7, 7));
 
         toggleButton = new JToggleButton("Disable overlay when walking");
 

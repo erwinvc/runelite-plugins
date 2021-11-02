@@ -13,6 +13,7 @@ Custom notification delays can be configured for each skill.
 - Cooking
 - Crafting
 - Fishing
+- Firemaking
 - Fletching
 - Herblore
 - Mining
