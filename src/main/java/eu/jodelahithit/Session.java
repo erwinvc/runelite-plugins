@@ -34,7 +34,7 @@ public class Session {
         walkingInstant = Instant.now();
     }
 
-    public boolean isWalking(){
-       return checkInstant(walkingInstant, 1.0f);
+    public boolean isWalking(float extraTimeout){
+       return checkInstant(walkingInstant, 1.0f + extraTimeout);
     }
 }

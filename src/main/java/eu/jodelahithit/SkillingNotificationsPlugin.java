@@ -110,7 +110,7 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     boolean shouldRenderOverlay() {
-        return selectedSkills.size() != 0 && !areSelectedSkillsActive() && !(config.disableWhenWalking() && session.isWalking());
+        return selectedSkills.size() != 0 && !areSelectedSkillsActive() && !(config.disableWhenWalking() && session.isWalking(config.walkDelay()));
     }
 
     public List<Skill> getSelectedSkills() {

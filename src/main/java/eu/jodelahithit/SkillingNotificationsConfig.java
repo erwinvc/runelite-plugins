@@ -157,9 +157,20 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigSection(
             name = "Extra Delays",
             description = "Set notification delays for individual skills. This means that it'll take longer for the notification to appear after the player started idling",
-            position = 50
+            position = 49
     )
     String delays = "Extra Delays";
+
+    @ConfigItem(
+            keyName = "WALKINGDELAY",
+            name = "Walking delay",
+            description = "Add an extra delay to notifications after walking when 'disable overlay when walking' is enabled",
+            position = 50,
+            section = delays
+    )
+    default int walkDelay() {
+        return 0;
+    }
 
     @ConfigItem(
             keyName = "COOKINGDELAY",
