@@ -150,6 +150,7 @@ public class Constants {
     static final Set<Integer> SMITHING_ANIMATIONS = ImmutableSet.of(
             SMITHING_ANVIL,
             SMITHING_SMELTING,
-            SMITHING_CANNONBALL
+            SMITHING_CANNONBALL,
+            SMITHING_IMCANDO_HAMMER
     );
 }
