@@ -12,7 +12,8 @@ public enum Skill {
     HERBLORE(Constants.HERBLORE_ANIMATIONS),
     MINING(Constants.MINING_ANIMATIONS),
     WOODCUTTING(Constants.WOODCUTTING_ANIMATIONS),
-    SMITHING(Constants.SMITHING_ANIMATIONS);
+    SMITHING(Constants.SMITHING_ANIMATIONS),
+    COMBAT(null);
 
     Set<Integer> animations;
 

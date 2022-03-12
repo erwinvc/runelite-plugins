@@ -21,11 +21,10 @@ public class SkillingNotificationsPanel extends PluginPanel {
     private ConfigManager configManager;
     private JPanel group;
     private JTextArea textLabel;
-    private JToggleButton toggleButton;
+    private JToggleButton walkingButton;
 
     SkillingNotificationsPanel(SkillingNotificationsPlugin plugin, ConfigManager configManager) {
         super();
-
         this.plugin = plugin;
         this.configManager = configManager;
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -45,16 +44,16 @@ public class SkillingNotificationsPanel extends PluginPanel {
         welcomeText.setHorizontalAlignment(JLabel.CENTER);
 
         group = new JPanel();
-        group.setLayout(new GridLayout(3, 3 , 7, 7));
+        group.setLayout(new GridLayout(0, 2 , 7, 7));
 
-        toggleButton = new JToggleButton("Disable overlay when walking");
+        walkingButton = new JToggleButton("Disable overlay while walking");
 
         JPanel descriptionPanel = new JPanel();
         descriptionPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         descriptionPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         JTextArea description = new JTextArea(0, 25);
-        description.setText("This plugin will display an overlay when the player isn't actively performing any of the following selected skills");
+        description.setText("This plugin will display an overlay when the player isn't actively performing any of the following selected skills.\n\nExtra notification delays can be customized in the plugin configuration.");
         description.setWrapStyleWord(true);
         description.setLineWrap(true);
         description.setOpaque(false);
@@ -74,7 +73,7 @@ public class SkillingNotificationsPanel extends PluginPanel {
         c.gridy++;
         add(group, c);
         c.gridy++;
-        add(toggleButton, c);
+        add(walkingButton, c);
     }
 
     @Override
@@ -102,10 +101,10 @@ public class SkillingNotificationsPanel extends PluginPanel {
             group.add(toggleButton);
         }
 
-        toggleButton = new JToggleButton("Disable notification when walking", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "disableWhenWalking")));
-        toggleButton.setFocusable(false);
-        toggleButton.setToolTipText("Forced the notification overlay to be disabled when the player walks");
-        toggleButton.addItemListener(new ItemListener() {
+        walkingButton = new JToggleButton("Disable overlay while walking", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "disableWhenWalking")));
+        walkingButton.setFocusable(false);
+        walkingButton.setToolTipText("Forces the notification overlay to be disabled while walking or running");
+        walkingButton.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent ev) {
                 configManager.setConfiguration("Skilling Notifications", "disableWhenWalking", ev.getStateChange() == ItemEvent.SELECTED);
             }

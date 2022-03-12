@@ -15,7 +15,7 @@ public class Session {
     }
 
     private boolean checkInstant(Instant instant, float timeout) {
-        return Duration.between(instant, Instant.now()).toMillis() < (timeout * 1000);
+        return Duration.between(instant, Instant.now()).toMillis() < timeout;
     }
 
     public void updateInstant(Skill skill) {
@@ -25,7 +25,7 @@ public class Session {
     public boolean isSkillActive(Skill skill) {
         Instant instant = skillInstants.get(skill);
         if (instant != null) {
-            return checkInstant(instant, 0.5f + Math.max(plugin.getExtraSkillDelay(skill), 0));
+            return checkInstant(instant, 500 + Math.max(plugin.getExtraSkillDelay(skill), 0));
         }
         return false;
     }

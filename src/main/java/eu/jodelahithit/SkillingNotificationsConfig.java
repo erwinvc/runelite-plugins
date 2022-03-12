@@ -154,26 +154,37 @@ public interface SkillingNotificationsConfig extends Config {
         return false;
     }
 
+    @ConfigItem(
+            keyName = "COMBAT",
+            name = "Combat",
+            description = "Causes notifications when the player is not in combat",
+            position = 30,
+            section = selectedSkills
+    )
+    default boolean combat() {
+        return false;
+    }
+
     @ConfigSection(
             name = "Extra Delays",
-            description = "Set notification delays for individual skills. This means that it'll take longer for the notification to appear after the player started idling",
+            description = "Set notification delays in milliseconds for individual skills. This means that it'll take longer for the notification to appear after the player started idling",
             position = 49
     )
     String delays = "Extra Delays";
 
     @ConfigItem(
-            keyName = "WALKINGDELAY",
+            keyName = "WALKINGDELAYV2",
             name = "Walking delay",
-            description = "Add an extra delay to notifications after walking when 'disable overlay when walking' is enabled",
+            description = "Add an extra delay to notifications after walking when 'disable overlay while walking' is enabled",
             position = 50,
             section = delays
     )
     default int walkDelay() {
-        return 0;
+        return 2000;
     }
 
     @ConfigItem(
-            keyName = "COOKINGDELAY",
+            keyName = "COOKINGDELAYV2",
             name = "Cooking delay",
             description = "Add an extra delay before the cooking notification",
             position = 51,
@@ -184,7 +195,7 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "CRAFTINGDELAY",
+            keyName = "CRAFTINGDELAYV2",
             name = "Crafting delay",
             description = "Add an extra delay before the crafting notification",
             position = 52,
@@ -195,7 +206,7 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "FISHINGDELAY",
+            keyName = "FISHINGDELAYV2",
             name = "Fishing delay",
             description = "Add an extra delay before the fishing notification",
             position = 53,
@@ -206,7 +217,7 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "FIREMAKINGDELAY",
+            keyName = "FIREMAKINGDELAYV2",
             name = "Firemaking delay",
             description = "Add an extra delay before the firemaking notification",
             position = 54,
@@ -217,7 +228,7 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "FLETCHINGDELAY",
+            keyName = "FLETCHINGDELAYV2",
             name = "Fletching delay",
             description = "Add an extra delay before the fletching notification",
             position = 55,
@@ -228,7 +239,7 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "HERBLOREDELAY",
+            keyName = "HERBLOREDELAYV2",
             name = "Herblore delay",
             description = "Add an extra delay before the herblore notification",
             position = 56,
@@ -239,7 +250,7 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "MININGDELAY",
+            keyName = "MININGDELAYV2",
             name = "Mining delay",
             description = "Add an extra delay before the mining notification",
             position = 57,
@@ -250,7 +261,7 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "WOODCUTTINGDELAY",
+            keyName = "WOODCUTTINGDELAYV2",
             name = "Woodcutting delay",
             description = "Add an extra delay before the woodcutting notification",
             position = 58,
@@ -261,13 +272,24 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "SMITHINGDELAY",
+            keyName = "SMITHINGDELAYV2",
             name = "Smithing delay",
             description = "Add an extra delay before the smithing notification",
             position = 59,
             section = delays
     )
     default int smithingDelay() {
+        return 0;
+    }
+
+    @ConfigItem(
+            keyName = "COMBATDELAYV2",
+            name = "Combat delay",
+            description = "Add an extra delay before the combat notification",
+            position = 60,
+            section = delays
+    )
+    default int combatDelay() {
         return 0;
     }
 }
