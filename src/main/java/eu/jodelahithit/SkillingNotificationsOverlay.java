@@ -10,12 +10,17 @@ import net.runelite.client.util.ColorUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
+import java.time.Duration;
+import java.time.Instant;
+
+import static java.time.Duration.between;
 
 public class SkillingNotificationsOverlay extends Overlay {
     private final Client client;
     private final SkillingNotificationsPlugin plugin;
     private final SkillingNotificationsConfig config;
     private final float TEXT_COLOR_LERP = 0.75f;
+    private Instant fadeInstant = Instant.now();
 
     @Inject
     private SkillingNotificationsOverlay(Client client, SkillingNotificationsPlugin plugin, SkillingNotificationsConfig config) {
@@ -27,12 +32,39 @@ public class SkillingNotificationsOverlay extends Overlay {
         this.config = config;
     }
 
+    float fadeValue = 0.0f;
+
+    private Color getFadedColor(Color input, boolean overlayEnabled) {
+        int fadeDuration = config.notificationFade();
+        if (fadeDuration == 0) {
+            fadeValue = 0.0f;
+            return input;
+        }
+
+        Instant now = Instant.now();
+        float difference = (float) Duration.between(fadeInstant, now).toMillis() / fadeDuration;
+
+        fadeValue += overlayEnabled ? difference : -difference;
+        fadeInstant = now;
+
+        fadeValue = Utils.clamp01(fadeValue);
+
+        int r = input.getRed();
+        int g = input.getGreen();
+        int b = input.getBlue();
+        int a = input.getAlpha();
+        return new Color(r, g, b, (int) (a * fadeValue));
+    }
+
     @Override
     public Dimension render(Graphics2D graphics) {
-        if (plugin.shouldRenderOverlay()) {
-            if(config.flash() && client.getGameCycle() % 40 >= 20) return null;
+        boolean shouldRender = plugin.shouldRenderOverlay();
+        Color fadedColor = getFadedColor(config.overlayColor(), shouldRender);
+        if (shouldRender || fadeValue > 0.05f) {
+            boolean canFlash = fadeValue > 0.95f || config.notificationFade() == 0;
+            if (canFlash && config.flash() && client.getGameCycle() % 40 >= 20) return null;
             Color color = graphics.getColor();
-            graphics.setColor(config.overlayColor());
+            graphics.setColor(fadedColor);
             graphics.fill(new Rectangle(client.getCanvas().getSize()));
             graphics.setColor(color);
             if (!config.disableOverlayText()) {

@@ -53,7 +53,7 @@ public class SkillingNotificationsPanel extends PluginPanel {
         descriptionPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         JTextArea description = new JTextArea(0, 25);
-        description.setText("This plugin will display an overlay when the player isn't actively performing any of the following selected skills.\n\nExtra notification delays can be customized in the plugin configuration.");
+        description.setText("This plugin will display an overlay when the player is not actively performing any of the following selected skills.\n\nExtra notification delays can be configured in the plugin configuration.");
         description.setWrapStyleWord(true);
         description.setLineWrap(true);
         description.setOpaque(false);

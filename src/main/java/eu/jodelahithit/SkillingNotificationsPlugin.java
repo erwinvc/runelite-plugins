@@ -9,6 +9,7 @@ import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.HitsplatApplied;
+import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -34,6 +35,8 @@ import java.util.List;
         description = "Provides visual notifications when no longer actively performing the selected skill"
 )
 public class SkillingNotificationsPlugin extends Plugin {
+    private static final String WALK_HERE = "Walk here";
+
     private LocalPoint lastPlayerLocation;
     private Session session;
     private SkillingNotificationsPanel panel;
@@ -117,6 +120,11 @@ public class SkillingNotificationsPlugin extends Plugin {
         }
     }
 
+    @Subscribe
+    public void onMenuOptionClicked(MenuOptionClicked event) {
+        if (event.getMenuOption().equals(WALK_HERE)) session.updateWalkingInstant();
+    }
+
     boolean areSelectedSkillsActive() {
         boolean isActive = false;
         for (Skill skill : selectedSkills) {
@@ -143,8 +151,8 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     int getExtraSkillDelay(Skill skill) {
-        int delay = Integer.parseInt(configManager.getConfiguration("Skilling Notifications", skill.name() + "DELAYV2"));;
-        if(skill == Skill.COMBAT) return Utils.getAttackSpeed(client, itemManager) * 600 + delay;
+        int delay = Integer.parseInt(configManager.getConfiguration("Skilling Notifications", skill.name() + "DELAYV2"));
+        if (skill == Skill.COMBAT) return Utils.getAttackSpeed(client, itemManager) * 600 + delay;
         return delay;
     }
 

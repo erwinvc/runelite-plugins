@@ -28,10 +28,20 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "notificationFade",
+            name = "Notification fade duration",
+            description = "Duration of the idle overlay fade",
+            position = 3
+    )
+    default int notificationFade() {
+        return 0;
+    }
+
+    @ConfigItem(
             keyName = "disableOverlayText",
             name = "Disable overlay text",
             description = "Disable the \"Skill Notification\" text on the overlay",
-            position = 3
+            position = 4
     )
     default boolean disableOverlayText() {
         return false;
