@@ -14,6 +14,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import sun.swing.BakedArrayList;
 
 import java.util.*;
 import java.util.List;
@@ -76,19 +77,19 @@ public class ClanMemberListSortPlugin extends Plugin {
         if (event.getScriptId() != UNK_CLAN_TAB_SCRIPT) return;
         if (clanMemberListsWidget == null) return;
 
-        Widget[] containerChildren = clanMemberListsWidget.getDynamicChildren();
-
         List<ClanMemberListEntry> widgets = new ArrayList<>();
 
-        //Widgets are always in the same order: name, world, icon
+        ArrayList<Widget> relevantWidgets = new ArrayList<>();
 
-        if(containerChildren.length % 3 != 0) {
-            initWidgets();
-            return;
+        Widget[] containerChildren = clanMemberListsWidget.getDynamicChildren();
+        for (Widget widget : containerChildren) {
+            if (widget.getFontId() != -1 || widget.getSpriteId() != -1) relevantWidgets.add(widget);
         }
+        if(relevantWidgets.size() % 3 != 0) return;
 
-        for (int i = 0; i < containerChildren.length; i += 3) {
-            widgets.add(new ClanMemberListEntry(containerChildren[i], containerChildren[i + 1], containerChildren[i + 2]));
+        //Widgets are always in the same order: name, world, icon
+        for (int i = 0; i < relevantWidgets.size(); i += 3) {
+            widgets.add(new ClanMemberListEntry(relevantWidgets.get(i), relevantWidgets.get(i + 1), relevantWidgets.get(i + 2)));
         }
 
         Comparator<ClanMemberListEntry> comparator = null;
