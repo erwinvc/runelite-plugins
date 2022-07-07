@@ -33,9 +33,12 @@ public class ClanMemberListSortPlugin extends Plugin {
     private Widget clanMemberListsWidget;
     private Widget sortButton;
 
-    @Inject Client client;
-    @Inject ClientThread clientThread;
-    @Inject ClanMemberListSortConfig config;
+    @Inject
+    Client client;
+    @Inject
+    ClientThread clientThread;
+    @Inject
+    ClanMemberListSortConfig config;
 
     @Provides
     ClanMemberListSortConfig getConfig(ConfigManager configManager) {
@@ -45,7 +48,7 @@ public class ClanMemberListSortPlugin extends Plugin {
     @Subscribe
     public void onConfigChanged(ConfigChanged configChanged) {
         if (configChanged.getGroup().equals(CONFIG_GROUP)) {
-            if(configChanged.getKey().equals("reverseSort")) {
+            if (configChanged.getKey().equals("reverseSort")) {
                 updateSortButtonSprite();
             }
         }
@@ -71,13 +74,19 @@ public class ClanMemberListSortPlugin extends Plugin {
     @Subscribe
     public void onScriptPostFired(ScriptPostFired event) {
         if (event.getScriptId() != UNK_CLAN_TAB_SCRIPT) return;
-        if(clanMemberListsWidget == null) return;
+        if (clanMemberListsWidget == null) return;
 
         Widget[] containerChildren = clanMemberListsWidget.getDynamicChildren();
 
         List<ClanMemberListEntry> widgets = new ArrayList<>();
 
         //Widgets are always in the same order: name, world, icon
+
+        if(containerChildren.length % 3 != 0) {
+            initWidgets();
+            return;
+        }
+
         for (int i = 0; i < containerChildren.length; i += 3) {
             widgets.add(new ClanMemberListEntry(containerChildren[i], containerChildren[i + 1], containerChildren[i + 2]));
         }
@@ -106,7 +115,7 @@ public class ClanMemberListSortPlugin extends Plugin {
         clanMemberListsWidget = client.getWidget(WidgetInfo.CLAN_MEMBER_LIST);
         clanMemberListHeaderWidget = client.getWidget(WidgetInfo.CLAN_MEMBER_LIST.getGroupId(), 0);
 
-        if(clanMemberListHeaderWidget == null) return;
+        if (clanMemberListHeaderWidget == null) return;
 
         clanMemberListHeaderWidget.deleteAllChildren();
 
@@ -123,7 +132,7 @@ public class ClanMemberListSortPlugin extends Plugin {
         sortButton.revalidate();
     }
 
-    private void updateSortButtonSprite(){
+    private void updateSortButtonSprite() {
         sortButton.setSpriteId(config.reverseSort() ? SpriteID.SCROLLBAR_ARROW_UP : SpriteID.SCROLLBAR_ARROW_DOWN);
     }
 

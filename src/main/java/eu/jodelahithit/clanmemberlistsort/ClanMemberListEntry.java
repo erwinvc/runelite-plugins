@@ -35,11 +35,10 @@ public class ClanMemberListEntry {
         icon.revalidate();
     }
 
-    private String removeIconFromName(String name){
+    private String removeIconFromName(String name) {
         return name.replaceAll("( <img=[0-9]+>)", "");
     }
 
-    //#Todo cache clan rank?
     public void updateClanRank(Client client) {
         ClanChannel clanChannel = client.getClanChannel();
         if (clanChannel == null) {
@@ -52,11 +51,16 @@ public class ClanMemberListEntry {
             debugClanSettings(clanChannel);
             return;
         }
-        ClanChannelMember member = clanChannel.findMember(removeIconFromName(name.getText()));
+        ClanChannelMember member = null;
+        try {
+            member = clanChannel.findMember(removeIconFromName(name.getText()));
+        } catch (Exception ignored) {
+        }
         if (member == null) {
             debugClanMember(clanChannel, clanSettings);
             return;
         }
+
         clanRank = member.getRank();
     }
 
@@ -78,23 +82,26 @@ public class ClanMemberListEntry {
 
     //Debugging
     static int debugClanChannelPrintCount = 0;
+
     private void debugClanChannel() {
         if (debugClanChannelPrintCount++ > 5) return;
         log.error("Clan channel is null");
     }
 
     static int debugClanSettingsPrintCount = 0;
+
     private void debugClanSettings(ClanChannel clanChannel) {
         if (debugClanSettingsPrintCount++ > 5) return;
         log.error("Clan settings is null for clan: {}", clanChannel.getName());
     }
 
     static int debugClanMemberPrintCount = 0;
+
     private void debugClanMember(ClanChannel clanChannel, ClanSettings clanSettings) {
         if (debugClanMemberPrintCount++ > 5) return;
         log.error("Clan member is null for clan: " + clanChannel.getName());
         StringBuilder clanMemberNames = new StringBuilder();
-        for(ClanChannelMember member : clanChannel.getMembers()){
+        for (ClanChannelMember member : clanChannel.getMembers()) {
             String memberName = member.getName();
             clanMemberNames.append(memberName).append(Arrays.toString(memberName.getBytes())).append("\n");
         }
