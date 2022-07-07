@@ -14,7 +14,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import sun.swing.BakedArrayList;
 
 import java.util.*;
 import java.util.List;
