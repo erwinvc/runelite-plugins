@@ -1,4 +1,4 @@
-# Clan Member List Sort
+# Clan Member List Sort [![](https://img.shields.io/endpoint?url=https://i.pluginhub.info/shields/rank/plugin/clan-member-list-sort)](https://runelite.net/plugin-hub) [![](https://img.shields.io/endpoint?url=https://i.pluginhub.info/shields/installs/plugin/clan-member-list-sort)](https://runelite.net/plugin-hub)
 ## Description
 This plugin adds a sort button to the clan member list. 
 ___
