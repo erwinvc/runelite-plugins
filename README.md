@@ -1,4 +1,4 @@
-# Skilling Notifications
+# Skilling Notifications [![](https://img.shields.io/endpoint?url=https://i.pluginhub.info/shields/rank/plugin/skilling-notifications)](https://runelite.net/plugin-hub) [![](https://img.shields.io/endpoint?url=https://i.pluginhub.info/shields/installs/plugin/skilling-notifications)](https://runelite.net/plugin-hub)
 ## Description
 This plugin provides visual notifications when no longer actively performing the selected skill.
 This can help draw attention to Runelite when your character has finished their skilling interation.
