@@ -10,12 +10,14 @@ import java.util.Random;
 
 @Slf4j
 public class ClanMemberListEntry {
+    Widget opListener;
     Widget icon;
     Widget name;
     Widget world;
     ClanRank clanRank = randomRank();
 
-    public ClanMemberListEntry(Widget name, Widget world, Widget icon) {
+    public ClanMemberListEntry(Widget opListener, Widget name, Widget world, Widget icon) {
+        this.opListener = opListener;
         this.name = name;
         this.world = world;
         this.icon = icon;
@@ -27,16 +29,16 @@ public class ClanMemberListEntry {
     }
 
     public void setOriginalYAndRevalidate(int y) {
+        if (opListener != null) {
+            opListener.setOriginalY(y);
+            opListener.revalidate();
+        }
         name.setOriginalY(y);
         name.revalidate();
         world.setOriginalY(y);
         world.revalidate();
         icon.setOriginalY(y);
         icon.revalidate();
-    }
-
-    private String removeIconFromName(String name) {
-        return name.replaceAll("( <img=[0-9]+>)", "");
     }
 
     public void updateClanRank(Client client) {
@@ -53,7 +55,8 @@ public class ClanMemberListEntry {
         }
         ClanChannelMember member = null;
         try {
-            member = clanChannel.findMember(removeIconFromName(name.getText()));
+            String cleanName =  Utils.removeDecorationsFromString(name.getText()); //Fix for wise old man plugin icons
+            member = clanChannel.findMember(cleanName);
         } catch (Exception ignored) {
         }
         if (member == null) {

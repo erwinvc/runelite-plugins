@@ -71,24 +71,35 @@ public class ClanMemberListSortPlugin extends Plugin {
         }
     }
 
+    private Widget GetOnOpListenerWidgetFromName(Widget[] widgets, String name) {
+        for (int i = 0; i < widgets.length; i++) {
+            if (widgets[i].getOnOpListener() != null) {
+                if (Utils.removeDecorationsFromString(widgets[i].getName()).compareTo(name) == 0) return widgets[i];
+            }
+        }
+        return null;
+    }
+
     @Subscribe
     public void onScriptPostFired(ScriptPostFired event) {
         if (event.getScriptId() != UNK_CLAN_TAB_SCRIPT) return;
         if (clanMemberListsWidget == null) return;
 
-        List<ClanMemberListEntry> widgets = new ArrayList<>();
+        List<ClanMemberListEntry> entries = new ArrayList<>();
 
-        ArrayList<Widget> relevantWidgets = new ArrayList<>();
+        //Widgets are always in the same order for other players: name, world, icon. OpListener widget location does not seem to have a reliable position
+        //Local player doesn't have an opListener so we have to skip it
 
-        Widget[] containerChildren = clanMemberListsWidget.getDynamicChildren();
-        for (Widget widget : containerChildren) {
-            if (widget.getFontId() != -1 || widget.getSpriteId() != -1) relevantWidgets.add(widget);
-        }
-        if(relevantWidgets.size() % 3 != 0) return;
+        Widget[] widgets = clanMemberListsWidget.getChildren();
+        if (widgets == null) return;
 
-        //Widgets are always in the same order: name, world, icon
-        for (int i = 0; i < relevantWidgets.size(); i += 3) {
-            widgets.add(new ClanMemberListEntry(relevantWidgets.get(i), relevantWidgets.get(i + 1), relevantWidgets.get(i + 2)));
+        for (int i = 0; i < widgets.length - 3; i++) {
+            int firstType = widgets[i].getType();
+            if (firstType == 3 || firstType == 5) {
+                if (widgets[i + 1].getType() == 4 && widgets[i + 2].getType() == 4 && widgets[i + 3].getType() == 5) {
+                    entries.add(new ClanMemberListEntry(GetOnOpListenerWidgetFromName(widgets, widgets[i + 1].getText()), widgets[i + 1], widgets[i + 2], widgets[i + 3]));
+                }
+            }
         }
 
         Comparator<ClanMemberListEntry> comparator = null;
@@ -100,14 +111,14 @@ public class ClanMemberListSortPlugin extends Plugin {
                 comparator = Comparator.comparing(ClanMemberListEntry::getPlayerName);
                 break;
             case SORT_BY_RANK:
-                widgets.forEach(entry -> entry.updateClanRank(client));
+                entries.forEach(entry -> entry.updateClanRank(client));
                 comparator = Comparator.comparing(ClanMemberListEntry::getClanRank);
                 break;
         }
-        widgets.sort(config.reverseSort() ? comparator.reversed() : comparator);
+        entries.sort(config.reverseSort() ? comparator.reversed() : comparator);
 
-        for (int i = 0; i < widgets.size(); i++) {
-            widgets.get(i).setOriginalYAndRevalidate(WIDGET_HEIGHT * i);
+        for (int i = 0; i < entries.size(); i++) {
+            entries.get(i).setOriginalYAndRevalidate(WIDGET_HEIGHT * i);
         }
     }
 
