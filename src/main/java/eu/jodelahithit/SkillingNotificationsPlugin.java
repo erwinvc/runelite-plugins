@@ -113,9 +113,7 @@ public class SkillingNotificationsPlugin extends Plugin {
     public void onHitsplatApplied(HitsplatApplied hitsplatApplied) {
         Actor actor = hitsplatApplied.getActor();
         Hitsplat hitsplat = hitsplatApplied.getHitsplat();
-        Hitsplat.HitsplatType type = hitsplat.getHitsplatType();
-        boolean skip = type == Hitsplat.HitsplatType.POISON || type == Hitsplat.HitsplatType.VENOM || type == Hitsplat.HitsplatType.DISEASE || type == Hitsplat.HitsplatType.HEAL;
-        if (hitsplat.isMine() && !skip) {
+        if (hitsplat.isMine()) {
             session.updateInstant(Skill.COMBAT);
         }
     }
