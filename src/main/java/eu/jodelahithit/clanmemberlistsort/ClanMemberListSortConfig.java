@@ -3,6 +3,7 @@ package eu.jodelahithit.clanmemberlistsort;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.Range;
 
 @ConfigGroup(ClanMemberListSortPlugin.CONFIG_GROUP)
 public interface ClanMemberListSortConfig extends Config {
@@ -37,4 +38,18 @@ public interface ClanMemberListSortConfig extends Config {
             description = ""
     )
     void reverseSort(boolean value);
+
+
+    @ConfigItem(
+            keyName = "activityUpdateInterval",
+            name = "Activity update interval",
+            description = "Delay between updating the clan member list when sorting on activity"
+    )
+    @Range(
+            min = 500
+    )
+    default int activityUpdateInterval()
+    {
+        return 6000;
+    }
 }

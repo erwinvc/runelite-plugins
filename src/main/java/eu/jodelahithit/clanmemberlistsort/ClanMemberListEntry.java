@@ -4,19 +4,23 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.clan.*;
 import net.runelite.api.widgets.Widget;
+import net.runelite.client.util.Text;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Random;
 
 @Slf4j
 public class ClanMemberListEntry {
+    ClanMemberListSortPlugin plugin;
     Widget opListener;
     Widget icon;
     Widget name;
     Widget world;
     ClanRank clanRank = randomRank();
 
-    public ClanMemberListEntry(Widget opListener, Widget name, Widget world, Widget icon) {
+    public ClanMemberListEntry(ClanMemberListSortPlugin plugin, Widget opListener, Widget name, Widget world, Widget icon) {
+        this.plugin = plugin;
         this.opListener = opListener;
         this.name = name;
         this.world = world;
@@ -55,7 +59,7 @@ public class ClanMemberListEntry {
         }
         ClanChannelMember member = null;
         try {
-            String cleanName =  Utils.removeDecorationsFromString(name.getText()); //Fix for wise old man plugin icons
+            String cleanName =  Text.removeTags(name.getText()); //Fix for wise old man plugin icons
             member = clanChannel.findMember(cleanName);
         } catch (Exception ignored) {
         }
@@ -72,7 +76,7 @@ public class ClanMemberListEntry {
     }
 
     public String getPlayerName() {
-        return name.getText().toLowerCase();
+        return name.getText();
     }
 
     public String getWorld() {
@@ -81,6 +85,13 @@ public class ClanMemberListEntry {
 
     public ClanRank getClanRank() {
         return clanRank;
+    }
+
+    public int getActivity() {
+        Integer instant = plugin.getPlayerActivity(getPlayerName());
+        System.out.println(getPlayerName() + " + " + instant);
+        if(instant == null) return 0;
+        return instant;
     }
 
     //Debugging
