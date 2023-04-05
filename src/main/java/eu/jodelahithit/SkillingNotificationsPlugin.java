@@ -7,9 +7,9 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.events.ClientTick;
-import net.runelite.api.events.HitsplatApplied;
-import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.*;
+import net.runelite.api.worldmap.WorldMapRegion;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -18,13 +18,11 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
-import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
-import net.runelite.http.api.item.ItemStats;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.image.BufferedImage;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +34,13 @@ import java.util.List;
 )
 public class SkillingNotificationsPlugin extends Plugin {
     private static final String WALK_HERE = "Walk here";
-
+    private static final int MANIACAL_MONKEYS_REGION_ID = 11662;
     private LocalPoint lastPlayerLocation;
     private Session session;
     private SkillingNotificationsPanel panel;
     private NavigationButton navigationButton;
     private List<Skill> selectedSkills = new ArrayList<>();
+    public Tile lastManiacalMonkeyRockTile = null;
 
     @Inject
     Client client;
@@ -119,6 +118,30 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     @Subscribe
+    public void onGameObjectSpawned(GameObjectSpawned event) {
+        final GameObject gameObject = event.getGameObject();
+        final int id = gameObject.getId();
+        final WorldPoint trapLocation = gameObject.getWorldLocation();
+
+        if (id == ObjectID.MONKEY_TRAP || id == ObjectID.LARGE_BOULDER_28825) {
+            if (client.getLocalPlayer().getWorldLocation().distanceTo(trapLocation) <= 2) {
+                lastManiacalMonkeyRockTile = event.getTile();
+            }
+            return;
+        }
+
+        if (Constants.MONKEY_ROCKS.contains(id)) {
+            if (lastManiacalMonkeyRockTile != null && event.getTile() == lastManiacalMonkeyRockTile)
+                lastManiacalMonkeyRockTile = null;
+        }
+    }
+
+    @Subscribe
+    private void onWorldChanged(WorldChanged ev) {
+        lastManiacalMonkeyRockTile = null;
+    }
+
+    @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event) {
         if (event.getMenuOption().equals(WALK_HERE)) session.updateWalkingInstant();
     }
@@ -132,7 +155,10 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     boolean shouldRenderOverlay() {
-        return selectedSkills.size() != 0 && !areSelectedSkillsActive() && !(config.disableWhenWalking() && session.isWalking(config.walkDelay()));
+        final boolean maniacalMonkeys = (isInManiacalMonkeysArea() && config.maniacalMonkeys() && lastManiacalMonkeyRockTile == null);
+        final boolean skills = selectedSkills.size() != 0 && !areSelectedSkillsActive();
+        final boolean notWalking = !(config.disableWhenWalking() && session.isWalking(config.walkDelay()));
+        return (maniacalMonkeys || skills) && notWalking;
     }
 
     public List<Skill> getSelectedSkills() {
@@ -156,5 +182,9 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     void setSkillInConfig(Skill skill) {
         configManager.setConfiguration("Skilling Notifications", "selectedSkill", skill);
+    }
+
+    private boolean isInManiacalMonkeysArea() {
+        return ArrayUtils.contains(client.getMapRegions(), MANIACAL_MONKEYS_REGION_ID);
     }
 }

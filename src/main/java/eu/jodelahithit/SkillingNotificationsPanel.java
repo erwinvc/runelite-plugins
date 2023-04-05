@@ -109,6 +109,18 @@ public class SkillingNotificationsPanel extends PluginPanel {
                 configManager.setConfiguration("Skilling Notifications", "disableWhenWalking", ev.getStateChange() == ItemEvent.SELECTED);
             }
         });
+
+        boolean isActive = Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "MANIACALMONKEYS"));
+        JToggleButton mmButton = new JToggleButton(new ImageIcon(GetIcon("/eu/jodelahithit/monkey.png")), isActive);
+        mmButton.setToolTipText("Maniacal monkeys");
+        mmButton.setFocusable(false);
+        mmButton.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent ev) {
+                configManager.setConfiguration("Skilling Notifications", "MANIACALMONKEYS", ev.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+        group.add(mmButton);
     }
 
     private BufferedImage GetIcon(String path) {

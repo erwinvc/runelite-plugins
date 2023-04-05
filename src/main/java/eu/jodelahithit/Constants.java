@@ -1,10 +1,12 @@
 package eu.jodelahithit;
 
 import com.google.common.collect.ImmutableSet;
+import net.runelite.api.ObjectID;
 
 import java.util.Set;
 
 import static net.runelite.api.AnimationID.*;
+
 
 public class Constants {
     static final Set<Integer> COOKING_ANIMATIONS = ImmutableSet.of(COOKING_FIRE, COOKING_RANGE, COOKING_WINE);
@@ -153,5 +155,13 @@ public class Constants {
             SMITHING_SMELTING,
             SMITHING_CANNONBALL,
             SMITHING_IMCANDO_HAMMER
+    );
+
+    static final Set<Integer> MONKEY_ROCKS = ImmutableSet.of(
+            ObjectID.LARGE_BOULDER,
+            ObjectID.LARGE_BOULDER_28830,
+            ObjectID.LARGE_BOULDER_28831
+            //ObjectID.MONKEY_TRAP_28828,
+            //ObjectID.MONKEY_TRAP_28829
     );
 }

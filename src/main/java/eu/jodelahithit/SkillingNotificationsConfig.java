@@ -175,6 +175,17 @@ public interface SkillingNotificationsConfig extends Config {
         return false;
     }
 
+    @ConfigItem(
+            keyName = "MANIACALMONKEYS",
+            name = "Maniacal monkeys",
+            description = "Causes notifications when the player is not catching maniacal monkeys",
+            position = 31,
+            section = selectedSkills
+    )
+    default boolean maniacalMonkeys() {
+        return false;
+    }
+
     @ConfigSection(
             name = "Extra Delays",
             description = "Set notification delays in milliseconds for individual skills. This means that it'll take longer for the notification to appear after the player started idling",
