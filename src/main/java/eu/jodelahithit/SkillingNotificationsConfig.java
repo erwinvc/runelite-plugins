@@ -186,6 +186,17 @@ public interface SkillingNotificationsConfig extends Config {
         return false;
     }
 
+    @ConfigItem(
+            keyName = "LUNAR",
+            name = "Lunar",
+            description = "Causes notifications when the player is not casting Lunar crafting spells",
+            position = 32,
+            section = selectedSkills
+    )
+    default boolean lunar() {
+        return false;
+    }
+
     @ConfigSection(
             name = "Extra Delays",
             description = "Set notification delays in milliseconds for individual skills. This means that it'll take longer for the notification to appear after the player started idling",
@@ -304,10 +315,21 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "LUNARDELAYV2",
+            name = "Lunar delay",
+            description = "Add an extra delay before the Lunar spell notification",
+            position = 60,
+            section = delays
+    )
+    default int lunarDelay() {
+        return 0;
+    }
+
+    @ConfigItem(
             keyName = "COMBATDELAYV2",
             name = "Combat delay",
             description = "Add an extra delay before the combat notification",
-            position = 60,
+            position = 61,
             section = delays
     )
     default int combatDelay() {

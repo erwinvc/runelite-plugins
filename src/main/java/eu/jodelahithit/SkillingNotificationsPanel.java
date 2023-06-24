@@ -20,8 +20,7 @@ public class SkillingNotificationsPanel extends PluginPanel {
     private SkillingNotificationsPlugin plugin;
     private ConfigManager configManager;
     private JPanel group;
-    private JTextArea textLabel;
-    private JToggleButton walkingButton;
+    private JToggleButton walkingButton, flashingButton;
 
     SkillingNotificationsPanel(SkillingNotificationsPlugin plugin, ConfigManager configManager) {
         super();
@@ -74,6 +73,8 @@ public class SkillingNotificationsPanel extends PluginPanel {
         add(group, c);
         c.gridy++;
         add(walkingButton, c);
+        c.gridy++;
+        add(flashingButton, c);
     }
 
     @Override
@@ -86,9 +87,9 @@ public class SkillingNotificationsPanel extends PluginPanel {
         for (Skill skill : Skill.values()) {
             if (skill == Skill.NONE) continue;
             String skillIcon = "/skill_icons/" + skill.name().toLowerCase() + ".png";
-
+            ImageIcon icon = new ImageIcon(GetIcon(skill.customImage == null ? skillIcon : skill.customImage));
             boolean isActive = Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", skill.name()));
-            JToggleButton toggleButton = new JToggleButton(new ImageIcon(GetIcon(skillIcon)), isActive);
+            JToggleButton toggleButton = new JToggleButton(icon, isActive);
             toggleButton.setToolTipText(StringUtils.capitalize(skill.name().toLowerCase()));
             toggleButton.setFocusable(false);
             toggleButton.addItemListener(new ItemListener() {
@@ -110,17 +111,14 @@ public class SkillingNotificationsPanel extends PluginPanel {
             }
         });
 
-        boolean isActive = Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "MANIACALMONKEYS"));
-        JToggleButton mmButton = new JToggleButton(new ImageIcon(GetIcon("/eu/jodelahithit/monkey.png")), isActive);
-        mmButton.setToolTipText("Maniacal monkeys");
-        mmButton.setFocusable(false);
-        mmButton.addItemListener(new ItemListener() {
-
+        flashingButton = new JToggleButton("Notification flash", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "notificationFlash")));
+        flashingButton.setFocusable(false);
+        flashingButton.setToolTipText("Flashes notifications at the configured interval");
+        flashingButton.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent ev) {
-                configManager.setConfiguration("Skilling Notifications", "MANIACALMONKEYS", ev.getStateChange() == ItemEvent.SELECTED);
+                configManager.setConfiguration("Skilling Notifications", "notificationFlash", ev.getStateChange() == ItemEvent.SELECTED);
             }
         });
-        group.add(mmButton);
     }
 
     private BufferedImage GetIcon(String path) {

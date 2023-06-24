@@ -9,6 +9,7 @@ import static net.runelite.api.AnimationID.*;
 
 
 public class Constants {
+    static final Set<Integer> LUNAR_ANIMATIONS = ImmutableSet.of(MAGIC_LUNAR_SHARED, MAGIC_LUNAR_PLANK_MAKE, MAGIC_LUNAR_STRING_JEWELRY);
     static final Set<Integer> COOKING_ANIMATIONS = ImmutableSet.of(COOKING_FIRE, COOKING_RANGE, COOKING_WINE);
     static final Set<Integer> FIREMAKING_ANIMATIONS = ImmutableSet.of(FIREMAKING); //Todo: barbarian fishing?
     static final Set<Integer> FISHING_ANIMATIONS = ImmutableSet.of(
