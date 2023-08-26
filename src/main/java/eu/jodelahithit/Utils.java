@@ -24,6 +24,11 @@ public class Utils {
         return metrics.stringWidth(text);
     }
 
+    public static int getStringHeight(Graphics graphics) {
+        FontMetrics metrics = graphics.getFontMetrics();
+        return metrics.getHeight();
+    }
+
     public static void renderTextCentered(Graphics2D graphics, Point txtLoc, String text, Color color) {
         if (!Strings.isNullOrEmpty(text)) {
             int x = txtLoc.getX();

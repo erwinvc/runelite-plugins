@@ -14,6 +14,7 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -22,6 +23,8 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +40,10 @@ public class SkillingNotificationsPlugin extends Plugin {
     private static final int MANIACAL_MONKEYS_REGION_ID = 11662;
     private LocalPoint lastPlayerLocation;
     private Session session;
-    private SkillingNotificationsPanel panel;
     private NavigationButton navigationButton;
     private List<Skill> selectedSkills = new ArrayList<>();
     public Tile lastManiacalMonkeyRockTile = null;
+    public SkillingNotificationsPanel panel;
 
     @Inject
     Client client;
@@ -53,16 +56,21 @@ public class SkillingNotificationsPlugin extends Plugin {
     @Inject
     SkillingNotificationsOverlay overlay;
     @Inject
+    SkillingNotificationsListener inputListener;
+    @Inject
     ClientToolbar clientToolbar;
     @Inject
-    private ItemManager itemManager;
+    ItemManager itemManager;
+    @Inject
+    KeyManager keyManager;
 
     public final BufferedImage ICON = ImageUtil.loadImageResource(SkillingNotificationsPlugin.class, "icon.png");
 
     @Override
     protected void startUp() throws Exception {
+        keyManager.registerKeyListener(inputListener);
         updateSelectedSkills();
-        panel = new SkillingNotificationsPanel(this, configManager);
+        panel = new SkillingNotificationsPanel(configManager);
         navigationButton = NavigationButton.builder()
                 .tooltip("Skilling Notifications")
                 .icon(ICON).priority(10).panel(panel)
@@ -71,14 +79,13 @@ public class SkillingNotificationsPlugin extends Plugin {
         clientToolbar.addNavigation(navigationButton);
         overlayManager.add(overlay);
         session = new Session(this);
-        log.info("Skilling notifications plugin started!");
     }
 
     @Override
     protected void shutDown() throws Exception {
         clientToolbar.removeNavigation(navigationButton);
         overlayManager.remove(overlay);
-        log.info("Skilling notifications plugin stopped!");
+        keyManager.unregisterKeyListener(inputListener);
     }
 
     @Provides
@@ -88,6 +95,7 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     @Subscribe
     public void onClientTick(ClientTick clientTick) {
+        if (!config.enabled()) return;
         for (Skill skill : selectedSkills) {
             if (Utils.isInAnimation(skill, client)) session.updateInstant(skill);
         }
@@ -110,6 +118,7 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     @Subscribe
     public void onHitsplatApplied(HitsplatApplied hitsplatApplied) {
+        if (!config.enabled()) return;
         Actor actor = hitsplatApplied.getActor();
         Hitsplat hitsplat = hitsplatApplied.getHitsplat();
         if (hitsplat.isMine()) {
@@ -155,6 +164,7 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     boolean shouldRenderOverlay() {
+        if (!config.enabled()) return false;
         final boolean maniacalMonkeys = (isInManiacalMonkeysArea() && config.maniacalMonkeys() && lastManiacalMonkeyRockTile == null);
         final boolean skills = selectedSkills.size() != 0 && !areSelectedSkillsActive();
         final boolean notWalking = !(config.disableWhenWalking() && session.isWalking(config.walkDelay()));
@@ -184,7 +194,7 @@ public class SkillingNotificationsPlugin extends Plugin {
         configManager.setConfiguration("Skilling Notifications", "selectedSkill", skill);
     }
 
-    private boolean isInManiacalMonkeysArea() {
+    boolean isInManiacalMonkeysArea() {
         return ArrayUtils.contains(client.getMapRegions(), MANIACAL_MONKEYS_REGION_ID);
     }
 }

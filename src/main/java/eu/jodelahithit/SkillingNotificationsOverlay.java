@@ -7,13 +7,10 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.util.ColorUtil;
-import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.time.Duration;
 import java.time.Instant;
-
-import static java.time.Duration.between;
 
 public class SkillingNotificationsOverlay extends Overlay {
     private final Client client;
@@ -21,6 +18,8 @@ public class SkillingNotificationsOverlay extends Overlay {
     private final SkillingNotificationsConfig config;
     private final float TEXT_COLOR_LERP = 0.75f;
     private Instant fadeInstant = Instant.now();
+    private static Instant notificationInstant = Instant.now();
+    private static String notificationText;
 
     @Inject
     private SkillingNotificationsOverlay(Client client, SkillingNotificationsPlugin plugin, SkillingNotificationsConfig config) {
@@ -68,10 +67,19 @@ public class SkillingNotificationsOverlay extends Overlay {
             graphics.fill(new Rectangle(client.getCanvas().getSize()));
             graphics.setColor(color);
             if (!config.disableOverlayText()) {
-                Point location = new Point(client.getCanvasWidth() / 2, client.getCanvasHeight() / 8);
-                Utils.renderTextCentered(graphics, location, "Skilling Notification", ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP));
+                Point locationOffset = new Point(client.getCanvasWidth() / 2, client.getCanvasHeight() / 8 + Utils.getStringHeight(graphics));
+                Utils.renderTextCentered(graphics, locationOffset, "Skilling Notification", ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP));
             }
         }
+        if (Session.checkInstant(notificationInstant, 2000)) {
+            Point location = new Point(client.getCanvasWidth() / 2, client.getCanvasHeight() / 8);
+            Utils.renderTextCentered(graphics, location, notificationText, ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP));
+        }
         return null;
+    }
+
+    public void Notify(String text) {
+        notificationInstant = Instant.now();
+        notificationText = text;
     }
 }

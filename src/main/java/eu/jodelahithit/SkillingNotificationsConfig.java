@@ -3,15 +3,52 @@ package eu.jodelahithit;
 import net.runelite.client.config.*;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 @ConfigGroup("Skilling Notifications")
 public interface SkillingNotificationsConfig extends Config {
+    @ConfigItem(
+            hidden = true,
+            keyName = "enabled",
+            name = "Enabled",
+            description = "Toggles the overlay and plugin functionality",
+            position = 0
+    )
+    default boolean enabled() {
+        return true;
+    }
+
+    @ConfigItem(
+            keyName = "toggle",
+            name = "Toggle keybind",
+            description = "The key which will toggle the overlay and plugin functionality",
+            position = 1
+
+    )
+    default ModifierlessKeybind toggle()
+    {
+        return new ModifierlessKeybind(KeyEvent.VK_F5, 0);
+    }
+
+    @ConfigItem(
+            keyName = "toggleFlash",
+            name = "Toggle flash keybind",
+            description = "The key which will toggle the notifcation flash",
+            position = 2
+
+    )
+    default ModifierlessKeybind toggleFlash()
+    {
+        return new ModifierlessKeybind(KeyEvent.VK_F6, 0);
+    }
+
+
     @Alpha
     @ConfigItem(
             keyName = "overlayColor",
             name = "Notification color",
             description = "Set the notification overlay color",
-            position = 1
+            position = 3
     )
     default Color overlayColor() {
         return new Color(1.0f, 0.0f, 0.0f, 0.5f);
@@ -21,7 +58,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "notificationFlash",
             name = "Notification flash",
             description = "Flash the idle overlay",
-            position = 2
+            position = 4
     )
     default boolean flash() {
         return false;
@@ -31,7 +68,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "notificationFade",
             name = "Notification fade duration",
             description = "Duration of the idle overlay fade",
-            position = 3
+            position = 5
     )
     default int notificationFade() {
         return 0;
@@ -41,7 +78,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "disableOverlayText",
             name = "Disable overlay text",
             description = "Disable the \"Skill Notification\" text on the overlay",
-            position = 4
+            position = 6
     )
     default boolean disableOverlayText() {
         return false;
@@ -51,7 +88,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "disableWhenWalking",
             name = "Disable overlay while walking",
             description = "Disable the idle overlay when the player is walking or running",
-            position = 4
+            position = 7
     )
     default boolean disableWhenWalking() {
         return true;

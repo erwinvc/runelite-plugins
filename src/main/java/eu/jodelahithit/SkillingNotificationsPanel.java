@@ -7,6 +7,7 @@ import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.ImageUtil;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -16,15 +17,13 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public class SkillingNotificationsPanel extends PluginPanel {
-    private Dictionary<String, BufferedImage> iconsCache = new Hashtable<>();
-    private SkillingNotificationsPlugin plugin;
-    private ConfigManager configManager;
-    private JPanel group;
-    private JToggleButton walkingButton, flashingButton;
+    private final Dictionary<String, BufferedImage> iconsCache = new Hashtable<>();
+    private final ConfigManager configManager;
+    private final JPanel skillsPanel, enabledPanel, flashingPanel, walkingPanel;
 
-    SkillingNotificationsPanel(SkillingNotificationsPlugin plugin, ConfigManager configManager) {
+    @Inject
+    SkillingNotificationsPanel(ConfigManager configManager) {
         super();
-        this.plugin = plugin;
         this.configManager = configManager;
         setBorder(new EmptyBorder(5, 5, 5, 5));
         setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -42,10 +41,16 @@ public class SkillingNotificationsPanel extends PluginPanel {
         welcomeText.setFont(FontManager.getRunescapeBoldFont());
         welcomeText.setHorizontalAlignment(JLabel.CENTER);
 
-        group = new JPanel();
-        group.setLayout(new GridLayout(0, 2 , 7, 7));
+        skillsPanel = new JPanel();
+        skillsPanel.setLayout(new GridLayout(0, 2 , 7, 7));
 
-        walkingButton = new JToggleButton("Disable overlay while walking");
+        enabledPanel = new JPanel();
+        enabledPanel.setLayout(new GridLayout(1, 1, 0, 0));
+        flashingPanel = new JPanel();
+        flashingPanel.setLayout(new GridLayout(1, 1, 0, 0));
+        walkingPanel = new JPanel();
+        walkingPanel.setLayout(new GridLayout(1, 1, 0, 0));
+
 
         JPanel descriptionPanel = new JPanel();
         descriptionPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
@@ -70,11 +75,13 @@ public class SkillingNotificationsPanel extends PluginPanel {
         c.gridy++;
         add(descriptionPanel, c);
         c.gridy++;
-        add(group, c);
+        add(enabledPanel, c);
         c.gridy++;
-        add(walkingButton, c);
+        add(skillsPanel, c);
         c.gridy++;
-        add(flashingButton, c);
+        add(walkingPanel, c);
+        c.gridy++;
+        add(flashingPanel, c);
     }
 
     @Override
@@ -82,8 +89,9 @@ public class SkillingNotificationsPanel extends PluginPanel {
         repaintConfigButtons();
     }
 
-    private void repaintConfigButtons() {
-        group.removeAll();
+    public void repaintConfigButtons() {
+        setVisible(false);
+        skillsPanel.removeAll();
         for (Skill skill : Skill.values()) {
             if (skill == Skill.NONE) continue;
             String skillIcon = "/skill_icons/" + skill.name().toLowerCase() + ".png";
@@ -92,33 +100,31 @@ public class SkillingNotificationsPanel extends PluginPanel {
             JToggleButton toggleButton = new JToggleButton(icon, isActive);
             toggleButton.setToolTipText(StringUtils.capitalize(skill.name().toLowerCase()));
             toggleButton.setFocusable(false);
-            toggleButton.addItemListener(new ItemListener() {
-
-                public void itemStateChanged(ItemEvent ev) {
-                    configManager.setConfiguration("Skilling Notifications", skill.name(), ev.getStateChange() == ItemEvent.SELECTED);
-                }
-            });
-
-            group.add(toggleButton);
+            toggleButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", skill.name(), ev.getStateChange() == ItemEvent.SELECTED));
+            skillsPanel.add(toggleButton);
         }
 
-        walkingButton = new JToggleButton("Disable overlay while walking", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "disableWhenWalking")));
+        enabledPanel.removeAll();
+        JToggleButton enabledButton = new JToggleButton("Enabled", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "enabled")));
+        enabledButton.setFocusable(false);
+        enabledButton.setToolTipText("Toggles the overlay and plugin functionality");
+        enabledButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", "enabled", ev.getStateChange() == ItemEvent.SELECTED));
+        enabledPanel.add(enabledButton);
+
+        walkingPanel.removeAll();
+        JToggleButton walkingButton = new JToggleButton("Disable overlay while walking", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "disableWhenWalking")));
         walkingButton.setFocusable(false);
         walkingButton.setToolTipText("Forces the notification overlay to be disabled while walking or running");
-        walkingButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent ev) {
-                configManager.setConfiguration("Skilling Notifications", "disableWhenWalking", ev.getStateChange() == ItemEvent.SELECTED);
-            }
-        });
+        walkingButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", "disableWhenWalking", ev.getStateChange() == ItemEvent.SELECTED));
+        walkingPanel.add(walkingButton);
 
-        flashingButton = new JToggleButton("Notification flash", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "notificationFlash")));
+        flashingPanel.removeAll();
+        JToggleButton flashingButton = new JToggleButton("Notification flash", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "notificationFlash")));
         flashingButton.setFocusable(false);
         flashingButton.setToolTipText("Flashes notifications at the configured interval");
-        flashingButton.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent ev) {
-                configManager.setConfiguration("Skilling Notifications", "notificationFlash", ev.getStateChange() == ItemEvent.SELECTED);
-            }
-        });
+        flashingButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", "notificationFlash", ev.getStateChange() == ItemEvent.SELECTED));
+        flashingPanel.add(flashingButton);
+        setVisible(true);
     }
 
     private BufferedImage GetIcon(String path) {

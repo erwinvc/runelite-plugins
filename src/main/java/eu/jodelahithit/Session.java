@@ -14,7 +14,7 @@ public class Session {
         this.plugin = plugin;
     }
 
-    private boolean checkInstant(Instant instant, float timeout) {
+    public static boolean checkInstant(Instant instant, float timeout) {
         return Duration.between(instant, Instant.now()).toMillis() < timeout;
     }
 
