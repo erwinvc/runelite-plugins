@@ -46,6 +46,22 @@ public class Constants {
             FISHING_PEARL_OILY_ROD,
             FISHING_BARBARIAN_ROD);
 
+    public final static int MINING_CRASHEDSTAR_BRONZE = 6747;
+    public final static int MINING_CRASHEDSTAR_IRON = 6748;
+    public final static int MINING_CRASHEDSTAR_STEEL = 6749;
+    public final static int MINING_CRASHEDSTAR_BLACK = 6108;
+    public final static int MINING_CRASHEDSTAR_MITHRIL = 6751;
+    public final static int MINING_CRASHEDSTAR_ADAMANT = 6750;
+    public final static int MINING_CRASHEDSTAR_RUNE = 6746;
+    public final static int MINING_CRASHEDSTAR_GILDED = 8314;
+    public final static int MINING_CRASHEDSTAR_DRAGON = 7140;
+    public final static int MINING_CRASHEDSTAR_DRAGON_UPGRADED = 643;
+    public final static int MINING_CRASHEDSTAR_DRAGON_OR = 8349;
+    public final static int MINING_CRASHEDSTAR_DRAGON_OR_TRAILBLAZER = 8888;
+    public final static int MINING_CRASHEDSTAR_INFERNAL = 4483;
+    public final static int MINING_CRASHEDSTAR_3A = 7284;
+    public final static int MINING_CRASHEDSTAR_CRYSTAL = 8350;
+
     static final Set<Integer> MINING_ANIMATIONS = ImmutableSet.of(
             MINING_BRONZE_PICKAXE,
             MINING_IRON_PICKAXE,
@@ -81,7 +97,22 @@ public class Constants {
             MINING_MOTHERLODE_DRAGON_OR_TRAILBLAZER,
             MINING_MOTHERLODE_TRAILBLAZER,
             MINING_MOTHERLODE_CRYSTAL,
-            DENSE_ESSENCE_CHIPPING
+            DENSE_ESSENCE_CHIPPING,
+            MINING_CRASHEDSTAR_BRONZE,
+            MINING_CRASHEDSTAR_IRON,
+            MINING_CRASHEDSTAR_STEEL,
+            MINING_CRASHEDSTAR_BLACK,
+            MINING_CRASHEDSTAR_MITHRIL,
+            MINING_CRASHEDSTAR_ADAMANT,
+            MINING_CRASHEDSTAR_RUNE,
+            MINING_CRASHEDSTAR_GILDED,
+            MINING_CRASHEDSTAR_DRAGON,
+            MINING_CRASHEDSTAR_DRAGON_UPGRADED,
+            MINING_CRASHEDSTAR_DRAGON_OR,
+            MINING_CRASHEDSTAR_DRAGON_OR_TRAILBLAZER,
+            MINING_CRASHEDSTAR_INFERNAL,
+            MINING_CRASHEDSTAR_3A,
+            MINING_CRASHEDSTAR_CRYSTAL
     );
 
     static final Set<Integer> WOODCUTTING_ANIMATIONS = ImmutableSet.of(
