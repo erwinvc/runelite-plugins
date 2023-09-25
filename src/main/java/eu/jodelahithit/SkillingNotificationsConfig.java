@@ -352,10 +352,20 @@ public interface SkillingNotificationsConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "MANIACALMONKEYSDELAYV2",
+            name = "Maniacal monkeys delay",
+            description = "Add an extra delay before the maniacal monkey notification",
+            position = 60,
+            section = delays
+    )
+    default int maniacalMonkeysDelay() {
+        return 0;
+    }
+    @ConfigItem(
             keyName = "LUNARDELAYV2",
             name = "Lunar delay",
             description = "Add an extra delay before the Lunar spell notification",
-            position = 60,
+            position = 61,
             section = delays
     )
     default int lunarDelay() {
@@ -366,7 +376,7 @@ public interface SkillingNotificationsConfig extends Config {
             keyName = "COMBATDELAYV2",
             name = "Combat delay",
             description = "Add an extra delay before the combat notification",
-            position = 61,
+            position = 62,
             section = delays
     )
     default int combatDelay() {

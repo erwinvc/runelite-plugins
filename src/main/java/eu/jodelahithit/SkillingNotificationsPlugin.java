@@ -107,6 +107,10 @@ public class SkillingNotificationsPlugin extends Plugin {
             }
             lastPlayerLocation = playerLocation;
         }
+
+        boolean isInManiacalMonkeysArea = isInManiacalMonkeysArea();
+        if(!isInManiacalMonkeysArea() || (isInManiacalMonkeysArea && lastManiacalMonkeyRockTile != null))
+            session.updateInstant(Skill.MANIACALMONKEYS);
     }
 
     @Subscribe
@@ -165,10 +169,9 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     boolean shouldRenderOverlay() {
         if (!config.enabled()) return false;
-        final boolean maniacalMonkeys = (isInManiacalMonkeysArea() && config.maniacalMonkeys() && lastManiacalMonkeyRockTile == null);
-        final boolean skills = selectedSkills.size() != 0 && !areSelectedSkillsActive();
+        final boolean skills = !selectedSkills.isEmpty() && !areSelectedSkillsActive();
         final boolean notWalking = !(config.disableWhenWalking() && session.isWalking(config.walkDelay()));
-        return (maniacalMonkeys || skills) && notWalking;
+        return skills && notWalking;
     }
 
     public List<Skill> getSelectedSkills() {
