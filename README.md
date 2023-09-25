@@ -19,6 +19,9 @@ Custom notification delays can be configured for each skill.
 - Mining
 - Woodcutting
 - Smithing
+- Maniacal monkeys (hunter)
+- Lunar spells
+- Combat
 
 ## Feedback
 Feel free to contact me on Discord for feedback or suggestions.
