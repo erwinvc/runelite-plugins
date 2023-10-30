@@ -9,7 +9,7 @@ Custom notification delays can be configured for each skill.
 
 <img src="https://i.gyazo.com/a15d1192e39f5357d650a42b67274adf.png" alt="image" width="250"/>
 
-## Supported skills
+## Supported notification types
 - Cooking
 - Crafting
 - Fishing
@@ -22,6 +22,7 @@ Custom notification delays can be configured for each skill.
 - Maniacal monkeys (hunter)
 - Lunar spells
 - Combat
+- Custom XP drops
 
 ## Feedback
 Feel free to contact me on Discord for feedback or suggestions.
