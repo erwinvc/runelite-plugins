@@ -9,7 +9,6 @@ import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
-import net.runelite.api.worldmap.WorldMapRegion;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -23,8 +22,6 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +38,9 @@ public class SkillingNotificationsPlugin extends Plugin {
     private LocalPoint lastPlayerLocation;
     private Session session;
     private NavigationButton navigationButton;
-    private List<Skill> selectedSkills = new ArrayList<>();
+    private List<NotificationType> selectedNotificationTypes = new ArrayList<>();
     public Tile lastManiacalMonkeyRockTile = null;
+    private int[] xpCache;
     public SkillingNotificationsPanel panel;
 
     @Inject
@@ -68,6 +66,7 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
+        xpCache = new int[Skill.values().length];
         keyManager.registerKeyListener(inputListener);
         updateSelectedSkills();
         panel = new SkillingNotificationsPanel(configManager);
@@ -96,8 +95,8 @@ public class SkillingNotificationsPlugin extends Plugin {
     @Subscribe
     public void onClientTick(ClientTick clientTick) {
         if (!config.enabled()) return;
-        for (Skill skill : selectedSkills) {
-            if (Utils.isInAnimation(skill, client)) session.updateInstant(skill);
+        for (NotificationType notificationType : selectedNotificationTypes) {
+            if (Utils.isInAnimation(notificationType, client)) session.updateInstant(notificationType);
         }
         Player player = client.getLocalPlayer();
         if (player != null) {
@@ -110,7 +109,7 @@ public class SkillingNotificationsPlugin extends Plugin {
 
         boolean isInManiacalMonkeysArea = isInManiacalMonkeysArea();
         if(!isInManiacalMonkeysArea() || (isInManiacalMonkeysArea && lastManiacalMonkeyRockTile != null))
-            session.updateInstant(Skill.MANIACALMONKEYS);
+            session.updateInstant(NotificationType.MANIACALMONKEYS);
     }
 
     @Subscribe
@@ -121,12 +120,29 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     @Subscribe
+    public void onStatChanged(StatChanged statChanged) {
+        Skill skill = statChanged.getSkill();
+        int currentXp = statChanged.getXp();
+        int skillIdx = skill.ordinal();
+        int cachedXP = xpCache[skillIdx];
+        if (cachedXP < currentXp) {
+            int xpAmount = currentXp - cachedXP;
+            if (xpAmount >= config.customXPValue()) {
+                session.updateInstant(NotificationType.CUSTOMXP);
+                System.out.println("Update");
+            }
+        }
+
+        xpCache[skillIdx] = currentXp;
+    }
+
+    @Subscribe
     public void onHitsplatApplied(HitsplatApplied hitsplatApplied) {
         if (!config.enabled()) return;
         Actor actor = hitsplatApplied.getActor();
         Hitsplat hitsplat = hitsplatApplied.getHitsplat();
         if (hitsplat.isMine()) {
-            session.updateInstant(Skill.COMBAT);
+            session.updateInstant(NotificationType.COMBAT);
         }
     }
 
@@ -161,40 +177,41 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     boolean areSelectedSkillsActive() {
         boolean isActive = false;
-        for (Skill skill : selectedSkills) {
-            isActive |= session.isSkillActive(skill);
+        for (NotificationType notificationType : selectedNotificationTypes) {
+            isActive |= session.isSkillActive(notificationType);
         }
         return isActive;
     }
 
     boolean shouldRenderOverlay() {
         if (!config.enabled()) return false;
-        final boolean skills = !selectedSkills.isEmpty() && !areSelectedSkillsActive();
+        final boolean skills = !selectedNotificationTypes.isEmpty() && !areSelectedSkillsActive();
         final boolean notWalking = !(config.disableWhenWalking() && session.isWalking(config.walkDelay()));
         return skills && notWalking;
     }
 
-    public List<Skill> getSelectedSkills() {
-        return selectedSkills;
+    public List<NotificationType> getSelectedSkills() {
+        return selectedNotificationTypes;
     }
 
     void updateSelectedSkills() {
-        selectedSkills.clear();
-        for (Skill skill : Skill.values()) {
-            if (Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", skill.name().toUpperCase()))) {
-                selectedSkills.add(skill);
+        selectedNotificationTypes.clear();
+        for (NotificationType notificationType : NotificationType.values()) {
+            if (Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", notificationType.name().toUpperCase()))) {
+                selectedNotificationTypes.add(notificationType);
             }
         }
+
     }
 
-    int getExtraSkillDelay(Skill skill) {
-        int delay = Integer.parseInt(configManager.getConfiguration("Skilling Notifications", skill.name() + "DELAYV2"));
-        if (skill == Skill.COMBAT) return Utils.getAttackSpeed(client, itemManager) * 600 + delay;
+    int getExtraSkillDelay(NotificationType notificationType) {
+        int delay = Integer.parseInt(configManager.getConfiguration("Skilling Notifications", notificationType.name() + "DELAYV2"));
+        if (notificationType == NotificationType.COMBAT) return Utils.getAttackSpeed(client, itemManager) * 600 + delay;
         return delay;
     }
 
-    void setSkillInConfig(Skill skill) {
-        configManager.setConfiguration("Skilling Notifications", "selectedSkill", skill);
+    void setSkillInConfig(NotificationType notificationType) {
+        configManager.setConfiguration("Skilling Notifications", "selectedSkill", notificationType);
     }
 
     boolean isInManiacalMonkeysArea() {

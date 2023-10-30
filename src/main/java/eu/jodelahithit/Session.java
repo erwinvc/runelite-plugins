@@ -6,7 +6,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public class Session {
-    private Dictionary<Skill, Instant> skillInstants = new Hashtable<>();
+    private Dictionary<NotificationType, Instant> skillInstants = new Hashtable<>();
     private SkillingNotificationsPlugin plugin;
     private Instant walkingInstant = Instant.now();
 
@@ -18,14 +18,14 @@ public class Session {
         return Duration.between(instant, Instant.now()).toMillis() < timeout;
     }
 
-    public void updateInstant(Skill skill) {
-        skillInstants.put(skill, Instant.now());
+    public void updateInstant(NotificationType notificationType) {
+        skillInstants.put(notificationType, Instant.now());
     }
 
-    public boolean isSkillActive(Skill skill) {
-        Instant instant = skillInstants.get(skill);
+    public boolean isSkillActive(NotificationType notificationType) {
+        Instant instant = skillInstants.get(notificationType);
         if (instant != null) {
-            return checkInstant(instant, 500 + Math.max(plugin.getExtraSkillDelay(skill), 0));
+            return checkInstant(instant, 500 + Math.max(plugin.getExtraSkillDelay(notificationType), 0));
         }
         return false;
     }

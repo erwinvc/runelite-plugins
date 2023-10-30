@@ -116,7 +116,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "CRAFTING",
             name = "Crafting",
-            description = "Causes notifications when the player is not actively crafting",
+            description = "Displays notifications when the player is not actively crafting",
             position = 22,
             section = selectedSkills
     )
@@ -127,7 +127,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "FISHING",
             name = "Fishing",
-            description = "Causes notifications when the player is not actively fishing",
+            description = "Displays notifications when the player is not actively fishing",
             position = 23,
             section = selectedSkills
     )
@@ -138,7 +138,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "FIREMAKING",
             name = "Firemaking",
-            description = "Causes notifications when the player is not actively firemaking",
+            description = "Displays notifications when the player is not actively firemaking",
             position = 24,
             section = selectedSkills
     )
@@ -149,7 +149,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "FLETCHING",
             name = "Fletching ",
-            description = "Causes notifications when the player is not actively fletching",
+            description = "Displays notifications when the player is not actively fletching",
             position = 25,
             section = selectedSkills
     )
@@ -160,7 +160,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "HERBLORE",
             name = "Herblore",
-            description = "Causes notifications when the player is not actively doing herblore",
+            description = "Displays notifications when the player is not actively doing herblore",
             position = 26,
             section = selectedSkills
     )
@@ -171,7 +171,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "MINING",
             name = "Mining",
-            description = "Causes notifications when the player is not actively mining",
+            description = "Displays notifications when the player is not actively mining",
             position = 27,
             section = selectedSkills
     )
@@ -182,7 +182,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "WOODCUTTING",
             name = "Woodcutting",
-            description = "Causes notifications when the player is not actively woodcutting",
+            description = "Displays notifications when the player is not actively woodcutting",
             position = 28,
             section = selectedSkills
     )
@@ -193,7 +193,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "SMITHING",
             name = "Smithing",
-            description = "Causes notifications when the player is not actively smithing",
+            description = "Displays notifications when the player is not actively smithing",
             position = 29,
             section = selectedSkills
     )
@@ -204,7 +204,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "COMBAT",
             name = "Combat",
-            description = "Causes notifications when the player is not in combat",
+            description = "Displays notifications when the player is not in combat",
             position = 30,
             section = selectedSkills
     )
@@ -215,7 +215,7 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "MANIACALMONKEYS",
             name = "Maniacal monkeys",
-            description = "Causes notifications when the player is not catching maniacal monkeys",
+            description = "Displays notifications when the player is not catching maniacal monkeys",
             position = 31,
             section = selectedSkills
     )
@@ -226,12 +226,34 @@ public interface SkillingNotificationsConfig extends Config {
     @ConfigItem(
             keyName = "LUNAR",
             name = "Lunar",
-            description = "Causes notifications when the player is not casting Lunar crafting spells",
+            description = "Displays notifications when the player is not casting Lunar crafting spells",
             position = 32,
             section = selectedSkills
     )
     default boolean lunar() {
         return false;
+    }
+
+    @ConfigItem(
+            keyName = "CUSTOMXP",
+            name = "Custom XP",
+            description = "Displays notifications when the player is not receiving xp drops of the configured threshold",
+            position = 47,
+            section = selectedSkills
+    )
+    default boolean customXP() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "customXPValue",
+            name = "Custom XP Amount",
+            description = "The amount of XP that needs to be received in order to disable the custom xp notification",
+            position = 48,
+            section = selectedSkills
+    )
+    default int customXPValue() {
+        return 20;
     }
 
     @ConfigSection(
@@ -381,5 +403,16 @@ public interface SkillingNotificationsConfig extends Config {
     )
     default int combatDelay() {
         return 0;
+    }
+
+    @ConfigItem(
+            keyName = "CUSTOMXPDELAYV2",
+            name = "Custom XP delay",
+            description = "Add an extra delay before the custom XP notification",
+            position = 63,
+            section = delays
+    )
+    default int customXPDelay() {
+        return 1000;
     }
 }

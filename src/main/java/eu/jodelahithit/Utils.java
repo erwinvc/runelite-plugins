@@ -10,13 +10,13 @@ import net.runelite.http.api.item.ItemStats;
 import java.awt.*;
 
 public class Utils {
-    static boolean isInAnimation(Skill skill, Client client) {
-        if(skill == Skill.NONE) return false;
-        if(skill.animations == null) return false;
+    static boolean isInAnimation(NotificationType notificationType, Client client) {
+        if(notificationType == NotificationType.NONE) return false;
+        if(notificationType.animations == null) return false;
         Player player = client.getLocalPlayer();
         if(player == null) return false;
         int anim = player.getAnimation();
-        return skill.animations.contains(anim);
+        return notificationType.animations.contains(anim);
     }
 
     public static int getStringWidth(Graphics graphics, String text) {

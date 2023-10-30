@@ -46,22 +46,6 @@ public class Constants {
             FISHING_PEARL_OILY_ROD,
             FISHING_BARBARIAN_ROD);
 
-    public final static int MINING_CRASHEDSTAR_BRONZE = 6747;
-    public final static int MINING_CRASHEDSTAR_IRON = 6748;
-    public final static int MINING_CRASHEDSTAR_STEEL = 6749;
-    public final static int MINING_CRASHEDSTAR_BLACK = 6108;
-    public final static int MINING_CRASHEDSTAR_MITHRIL = 6751;
-    public final static int MINING_CRASHEDSTAR_ADAMANT = 6750;
-    public final static int MINING_CRASHEDSTAR_RUNE = 6746;
-    public final static int MINING_CRASHEDSTAR_GILDED = 8314;
-    public final static int MINING_CRASHEDSTAR_DRAGON = 7140;
-    public final static int MINING_CRASHEDSTAR_DRAGON_UPGRADED = 643;
-    public final static int MINING_CRASHEDSTAR_DRAGON_OR = 8349;
-    public final static int MINING_CRASHEDSTAR_DRAGON_OR_TRAILBLAZER = 8888;
-    public final static int MINING_CRASHEDSTAR_INFERNAL = 4483;
-    public final static int MINING_CRASHEDSTAR_3A = 7284;
-    public final static int MINING_CRASHEDSTAR_CRYSTAL = 8350;
-
     static final Set<Integer> MINING_ANIMATIONS = ImmutableSet.of(
             MINING_BRONZE_PICKAXE,
             MINING_IRON_PICKAXE,

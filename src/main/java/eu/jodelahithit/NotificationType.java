@@ -2,7 +2,7 @@ package eu.jodelahithit;
 
 import java.util.Set;
 
-public enum Skill {
+public enum NotificationType {
     NONE(null, null),
     COOKING(Constants.COOKING_ANIMATIONS, null),
     CRAFTING(Constants.CRAFTING_ANIMATIONS, null),
@@ -15,13 +15,14 @@ public enum Skill {
     SMITHING(Constants.SMITHING_ANIMATIONS, null),
     MANIACALMONKEYS(null, "/eu/jodelahithit/monkey.png"),
     LUNAR(Constants.LUNAR_ANIMATIONS, "/eu/jodelahithit/lunar.png"),
-    COMBAT(null, null);
+    COMBAT(null, null),
+    CUSTOMXP(null, null);
 
 
     Set<Integer> animations;
     String customImage;
 
-    Skill(Set<Integer> animations, String customImage) {
+    NotificationType(Set<Integer> animations, String customImage) {
         this.animations = animations;
         this.customImage = customImage;
     }

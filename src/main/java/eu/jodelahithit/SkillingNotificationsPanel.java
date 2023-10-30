@@ -19,7 +19,7 @@ import java.util.Hashtable;
 public class SkillingNotificationsPanel extends PluginPanel {
     private final Dictionary<String, BufferedImage> iconsCache = new Hashtable<>();
     private final ConfigManager configManager;
-    private final JPanel skillsPanel, enabledPanel, flashingPanel, walkingPanel;
+    private final JPanel skillsPanel, enabledPanel, flashingPanel, walkingPanel, customPanel;
 
     @Inject
     SkillingNotificationsPanel(ConfigManager configManager) {
@@ -50,7 +50,8 @@ public class SkillingNotificationsPanel extends PluginPanel {
         flashingPanel.setLayout(new GridLayout(1, 1, 0, 0));
         walkingPanel = new JPanel();
         walkingPanel.setLayout(new GridLayout(1, 1, 0, 0));
-
+        customPanel = new JPanel();
+        customPanel.setLayout(new GridLayout(1, 2, 0, 0));
 
         JPanel descriptionPanel = new JPanel();
         descriptionPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
@@ -77,11 +78,13 @@ public class SkillingNotificationsPanel extends PluginPanel {
         c.gridy++;
         add(enabledPanel, c);
         c.gridy++;
-        add(skillsPanel, c);
-        c.gridy++;
         add(walkingPanel, c);
         c.gridy++;
         add(flashingPanel, c);
+        c.gridy++;
+        add(skillsPanel, c);
+        c.gridy++;
+        add(customPanel, c);
     }
 
     @Override
@@ -92,15 +95,15 @@ public class SkillingNotificationsPanel extends PluginPanel {
     public void repaintConfigButtons() {
         setVisible(false);
         skillsPanel.removeAll();
-        for (Skill skill : Skill.values()) {
-            if (skill == Skill.NONE) continue;
-            String skillIcon = "/skill_icons/" + skill.name().toLowerCase() + ".png";
-            ImageIcon icon = new ImageIcon(GetIcon(skill.customImage == null ? skillIcon : skill.customImage));
-            boolean isActive = Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", skill.name()));
+        for (NotificationType notificationType : NotificationType.values()) {
+            if (notificationType == NotificationType.NONE || notificationType == NotificationType.CUSTOMXP) continue;
+            String skillIcon = "/skill_icons/" + notificationType.name().toLowerCase() + ".png";
+            ImageIcon icon = new ImageIcon(GetIcon(notificationType.customImage == null ? skillIcon : notificationType.customImage));
+            boolean isActive = Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", notificationType.name()));
             JToggleButton toggleButton = new JToggleButton(icon, isActive);
-            toggleButton.setToolTipText(StringUtils.capitalize(skill.name().toLowerCase()));
+            toggleButton.setToolTipText(StringUtils.capitalize(notificationType.name().toLowerCase()));
             toggleButton.setFocusable(false);
-            toggleButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", skill.name(), ev.getStateChange() == ItemEvent.SELECTED));
+            toggleButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", notificationType.name(), ev.getStateChange() == ItemEvent.SELECTED));
             skillsPanel.add(toggleButton);
         }
 
@@ -124,6 +127,19 @@ public class SkillingNotificationsPanel extends PluginPanel {
         flashingButton.setToolTipText("Flashes notifications at the configured interval");
         flashingButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", "notificationFlash", ev.getStateChange() == ItemEvent.SELECTED));
         flashingPanel.add(flashingButton);
+
+        customPanel.removeAll();
+        JToggleButton customXPButton = new JToggleButton("Custom XP", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "CUSTOMXP")));
+        customXPButton.setFocusable(false);
+        customXPButton.setToolTipText("Displays notifications when XP drops of the configured threshold are not received");
+        customXPButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", "CUSTOMXP", ev.getStateChange() == ItemEvent.SELECTED));
+        customPanel.add(customXPButton);
+
+        SpinnerModel model = new SpinnerNumberModel(Integer.parseInt(configManager.getConfiguration("Skilling Notifications", "customXPValue")), 1, Integer.MAX_VALUE, 10);
+        JSpinner spinner = new JSpinner(model);
+        spinner.addChangeListener(ev -> configManager.setConfiguration("Skilling Notifications", "customXPValue", spinner.getValue()));
+        customPanel.add(spinner);
+
         setVisible(true);
     }
 
