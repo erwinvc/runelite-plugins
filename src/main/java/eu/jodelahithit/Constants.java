@@ -9,9 +9,31 @@ import static net.runelite.api.AnimationID.*;
 
 
 public class Constants {
-    static final Set<Integer> LUNAR_ANIMATIONS = ImmutableSet.of(MAGIC_LUNAR_SHARED, MAGIC_LUNAR_PLANK_MAKE, MAGIC_LUNAR_STRING_JEWELRY);
-    static final Set<Integer> COOKING_ANIMATIONS = ImmutableSet.of(COOKING_FIRE, COOKING_RANGE, COOKING_WINE);
-    static final Set<Integer> FIREMAKING_ANIMATIONS = ImmutableSet.of(FIREMAKING); //Todo: barbarian fishing?
+    /*
+        Animation ID for Foresters campfire is 10572, but tending to the campfire
+        we're recieving 10573, so for now define that.
+        TODO: Update AnimationID upstream
+    */
+    public static final int SN_FIREMAKING_FORESTERS_CAMPFIRE = 10573;
+
+    static final Set<Integer> LUNAR_ANIMATIONS = ImmutableSet.of(
+            MAGIC_LUNAR_SHARED,
+            MAGIC_LUNAR_PLANK_MAKE,
+            MAGIC_LUNAR_STRING_JEWELRY
+    );
+
+    static final Set<Integer> COOKING_ANIMATIONS = ImmutableSet.of(
+            COOKING_FIRE,
+            COOKING_RANGE,
+            COOKING_WINE
+    );
+
+    static final Set<Integer> FIREMAKING_ANIMATIONS = ImmutableSet.of(
+            FIREMAKING,
+            FIREMAKING_FORESTERS_CAMPFIRE,
+            SN_FIREMAKING_FORESTERS_CAMPFIRE
+    );
+
     static final Set<Integer> FISHING_ANIMATIONS = ImmutableSet.of(
             FISHING_BIG_NET,
             FISHING_NET,
@@ -44,7 +66,8 @@ public class Constants {
             FISHING_PEARL_FLY_ROD_2,
             FISHING_PEARL_BARBARIAN_ROD_2,
             FISHING_PEARL_OILY_ROD,
-            FISHING_BARBARIAN_ROD);
+            FISHING_BARBARIAN_ROD
+    );
 
     static final Set<Integer> MINING_ANIMATIONS = ImmutableSet.of(
             MINING_BRONZE_PICKAXE,
@@ -113,7 +136,17 @@ public class Constants {
             WOODCUTTING_INFERNAL,
             WOODCUTTING_3A_AXE,
             WOODCUTTING_CRYSTAL,
-            WOODCUTTING_TRAILBLAZER);
+            WOODCUTTING_TRAILBLAZER,
+            WOODCUTTING_2H_BRONZE,
+            WOODCUTTING_2H_IRON,
+            WOODCUTTING_2H_STEEL,
+            WOODCUTTING_2H_BLACK,
+            WOODCUTTING_2H_MITHRIL,
+            WOODCUTTING_2H_ADAMANT,
+            WOODCUTTING_2H_RUNE,
+            WOODCUTTING_2H_DRAGON,
+            WOODCUTTING_2H_3A
+    );
 
     static final Set<Integer> FLETCHING_ANIMATIONS = ImmutableSet.of(
             FLETCHING_BOW_CUTTING,
@@ -138,7 +171,8 @@ public class Constants {
             FLETCHING_ATTACH_BOLT_TIPS_TO_RUNE_BOLT,
             FLETCHING_ATTACH_BOLT_TIPS_TO_DRAGON_BOLT,
             FLETCHING_ATTACH_HEADS,
-            FLETCHING_ATTACH_FEATHERS_TO_ARROWSHAFT);
+            FLETCHING_ATTACH_FEATHERS_TO_ARROWSHAFT
+    );
 
     static final Set<Integer> HERBLORE_ANIMATIONS = ImmutableSet.of(
             HERBLORE_MAKE_TAR,
