@@ -9,13 +9,6 @@ import static net.runelite.api.AnimationID.*;
 
 
 public class Constants {
-    /*
-        Animation ID for Foresters campfire is 10572, but tending to the campfire
-        we're recieving 10573, so for now define that.
-        TODO: Update AnimationID upstream
-    */
-    public static final int SN_FIREMAKING_FORESTERS_CAMPFIRE = 10573;
-
     static final Set<Integer> LUNAR_ANIMATIONS = ImmutableSet.of(
             MAGIC_LUNAR_SHARED,
             MAGIC_LUNAR_PLANK_MAKE,
@@ -30,8 +23,17 @@ public class Constants {
 
     static final Set<Integer> FIREMAKING_ANIMATIONS = ImmutableSet.of(
             FIREMAKING,
-            FIREMAKING_FORESTERS_CAMPFIRE,
-            SN_FIREMAKING_FORESTERS_CAMPFIRE
+            FIREMAKING_FORESTERS_CAMPFIRE_ARCTIC_PINE,
+            FIREMAKING_FORESTERS_CAMPFIRE_BLISTERWOOD,
+            FIREMAKING_FORESTERS_CAMPFIRE_LOGS,
+            FIREMAKING_FORESTERS_CAMPFIRE_MAGIC,
+            FIREMAKING_FORESTERS_CAMPFIRE_MAHOGANY,
+            FIREMAKING_FORESTERS_CAMPFIRE_MAPLE,
+            FIREMAKING_FORESTERS_CAMPFIRE_OAK,
+            FIREMAKING_FORESTERS_CAMPFIRE_REDWOOD,
+            FIREMAKING_FORESTERS_CAMPFIRE_TEAK,
+            FIREMAKING_FORESTERS_CAMPFIRE_WILLOW,
+            FIREMAKING_FORESTERS_CAMPFIRE_YEW
     );
 
     static final Set<Integer> FISHING_ANIMATIONS = ImmutableSet.of(
