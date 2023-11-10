@@ -129,7 +129,6 @@ public class SkillingNotificationsPlugin extends Plugin {
             int xpAmount = currentXp - cachedXP;
             if (xpAmount >= config.customXPValue()) {
                 session.updateInstant(NotificationType.CUSTOMXP);
-                System.out.println("Update");
             }
         }
 
