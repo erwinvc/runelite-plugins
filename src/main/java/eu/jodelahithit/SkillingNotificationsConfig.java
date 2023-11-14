@@ -94,6 +94,15 @@ public interface SkillingNotificationsConfig extends Config {
         return true;
     }
 
+
+    @ConfigItem(
+            keyName = "notificationSound",
+            name = "Notification sound",
+            description = "Plays a sound when the player is idle",
+            position = 8
+    )
+    default boolean notificationSound() {return false;}
+
     @ConfigSection(
             name = "Selected skills",
             description = "Set the selected skills that will cause a notification when idling",

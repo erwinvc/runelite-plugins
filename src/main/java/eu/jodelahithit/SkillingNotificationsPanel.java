@@ -19,7 +19,7 @@ import java.util.Hashtable;
 public class SkillingNotificationsPanel extends PluginPanel {
     private final Dictionary<String, BufferedImage> iconsCache = new Hashtable<>();
     private final ConfigManager configManager;
-    private final JPanel skillsPanel, enabledPanel, flashingPanel, walkingPanel, customPanel;
+    private final JPanel skillsPanel, enabledPanel, flashingPanel, soundPanel, walkingPanel, customPanel;
 
     @Inject
     SkillingNotificationsPanel(ConfigManager configManager) {
@@ -50,6 +50,8 @@ public class SkillingNotificationsPanel extends PluginPanel {
         flashingPanel.setLayout(new GridLayout(1, 1, 0, 0));
         walkingPanel = new JPanel();
         walkingPanel.setLayout(new GridLayout(1, 1, 0, 0));
+        soundPanel = new JPanel();
+        soundPanel.setLayout(new GridLayout(1, 2, 0, 0));
         customPanel = new JPanel();
         customPanel.setLayout(new GridLayout(1, 2, 0, 0));
 
@@ -82,6 +84,8 @@ public class SkillingNotificationsPanel extends PluginPanel {
         c.gridy++;
         add(flashingPanel, c);
         c.gridy++;
+        add(soundPanel, c);
+        c.gridy++;
         add(skillsPanel, c);
         c.gridy++;
         add(customPanel, c);
@@ -107,33 +111,11 @@ public class SkillingNotificationsPanel extends PluginPanel {
             skillsPanel.add(toggleButton);
         }
 
-        enabledPanel.removeAll();
-        JToggleButton enabledButton = new JToggleButton("Enabled", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "enabled")));
-        enabledButton.setFocusable(false);
-        enabledButton.setToolTipText("Toggles the overlay and plugin functionality");
-        enabledButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", "enabled", ev.getStateChange() == ItemEvent.SELECTED));
-        enabledPanel.add(enabledButton);
-
-        walkingPanel.removeAll();
-        JToggleButton walkingButton = new JToggleButton("Disable overlay while walking", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "disableWhenWalking")));
-        walkingButton.setFocusable(false);
-        walkingButton.setToolTipText("Forces the notification overlay to be disabled while walking or running");
-        walkingButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", "disableWhenWalking", ev.getStateChange() == ItemEvent.SELECTED));
-        walkingPanel.add(walkingButton);
-
-        flashingPanel.removeAll();
-        JToggleButton flashingButton = new JToggleButton("Notification flash", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "notificationFlash")));
-        flashingButton.setFocusable(false);
-        flashingButton.setToolTipText("Flashes notifications at the configured interval");
-        flashingButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", "notificationFlash", ev.getStateChange() == ItemEvent.SELECTED));
-        flashingPanel.add(flashingButton);
-
-        customPanel.removeAll();
-        JToggleButton customXPButton = new JToggleButton("Custom XP", Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", "CUSTOMXP")));
-        customXPButton.setFocusable(false);
-        customXPButton.setToolTipText("Displays notifications when XP drops of the configured threshold are not received");
-        customXPButton.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", "CUSTOMXP", ev.getStateChange() == ItemEvent.SELECTED));
-        customPanel.add(customXPButton);
+        AddButton(enabledPanel, "enabled", "Enabled", "Toggles the overlay and plugin functionality");
+        AddButton(walkingPanel, "disableWhenWalking", "Disable overlay while walking", "Forces the notification overlay to be disabled while walking or running");
+        AddButton(flashingPanel, "notificationFlash", "Notification flash", "Flashes notifications at the configured interval");
+        AddButton(soundPanel, "notificationSound", "Notification sound", "Plays a sound when the player is idle");
+        AddButton(customPanel, "CUSTOMXP", "Custom XP", "Displays notifications when XP drops of the configured threshold are not received");
 
         SpinnerModel model = new SpinnerNumberModel(Integer.parseInt(configManager.getConfiguration("Skilling Notifications", "customXPValue")), 1, Integer.MAX_VALUE, 10);
         JSpinner spinner = new JSpinner(model);
@@ -141,6 +123,15 @@ public class SkillingNotificationsPanel extends PluginPanel {
         customPanel.add(spinner);
 
         setVisible(true);
+    }
+
+    private void AddButton(JPanel panel, String configKey, String name, String description){
+        panel.removeAll();
+        JToggleButton button = new JToggleButton(name, Boolean.parseBoolean(configManager.getConfiguration("Skilling Notifications", configKey)));
+        button.setFocusable(false);
+        button.setToolTipText(description);
+        button.addItemListener(ev -> configManager.setConfiguration("Skilling Notifications", configKey, ev.getStateChange() == ItemEvent.SELECTED));
+        panel.add(button);
     }
 
     private BufferedImage GetIcon(String path) {

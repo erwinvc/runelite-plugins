@@ -20,6 +20,7 @@ public class SkillingNotificationsOverlay extends Overlay {
     private Instant fadeInstant = Instant.now();
     private static Instant notificationInstant = Instant.now();
     private static String notificationText;
+    private boolean previousShouldRender = false;
 
     @Inject
     private SkillingNotificationsOverlay(Client client, SkillingNotificationsPlugin plugin, SkillingNotificationsConfig config) {
@@ -58,6 +59,11 @@ public class SkillingNotificationsOverlay extends Overlay {
     @Override
     public Dimension render(Graphics2D graphics) {
         boolean shouldRender = plugin.shouldRenderOverlay();
+        if(config.notificationSound() && shouldRender && !previousShouldRender){
+            Toolkit.getDefaultToolkit().beep();
+        }
+        previousShouldRender = shouldRender;
+
         Color fadedColor = getFadedColor(config.overlayColor(), shouldRender);
         if (shouldRender || fadeValue > 0.05f) {
             boolean canFlash = fadeValue > 0.95f || config.notificationFade() == 0;
