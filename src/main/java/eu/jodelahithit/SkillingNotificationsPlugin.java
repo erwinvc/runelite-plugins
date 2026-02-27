@@ -10,6 +10,8 @@ import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
+import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -35,6 +37,9 @@ import java.util.List;
 )
 public class SkillingNotificationsPlugin extends Plugin {
     private static final String WALK_HERE = "Walk here";
+    private static final String DROP = "Drop";
+    private static final String SET_TRAP = "Set-trap";
+    private static final String CHECK = "Check";
     private static final String SET_HEADING = "Set heading";
     private static final int MANIACAL_MONKEYS_REGION_ID = 11662;
     private LocalPoint lastPlayerLocation;
@@ -43,6 +48,7 @@ public class SkillingNotificationsPlugin extends Plugin {
     private List<NotificationType> selectedNotificationTypes = new ArrayList<>();
     private Tile lastManiacalMonkeyRockTile = null;
     private int[] xpCache;
+    private int lastBananas = 0;
 
     @Getter
     private SkillingNotificationsPanel panel;
@@ -122,6 +128,10 @@ public class SkillingNotificationsPlugin extends Plugin {
             session.updateSailingInstant();
         }
 
+        if (Utils.isInAnimation(Constants.MONKEY_ANIMS, client)){
+            session.updateInstant(NotificationType.MANIACALMONKEYS);
+        }
+
         boolean isInManiacalMonkeysArea = isInManiacalMonkeysArea();
         if (!isInManiacalMonkeysArea || lastManiacalMonkeyRockTile != null) {
             session.updateInstant(NotificationType.MANIACALMONKEYS);
@@ -188,6 +198,37 @@ public class SkillingNotificationsPlugin extends Plugin {
     @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event) {
         if (event.getMenuOption().equals(WALK_HERE) || event.getMenuOption().equals(SET_HEADING)) session.updateWalkingInstant();
+        else {
+            if (!config.enabled() || (config.enabled() && (!config.maniacalMonkeys() || !isInManiacalMonkeysArea()))) return;
+            else if (event.getMenuOption().equals(DROP) && (event.getItemId() == ItemID.BASKET_EMPTY || event.getItemId() == ItemID.DAMAGED_BALLISTA_ROPE))
+                session.updateInstant(NotificationType.MANIACALMONKEYS);
+            else if (event.getMenuOption().equals(SET_TRAP) || event.getMenuOption().equals(CHECK))
+                session.updateInstant(NotificationType.MANIACALMONKEYS);
+        }
+    }
+
+    //Subscribe to item container event for inventory banana checks for maniacal monkeys
+    @Subscribe
+    public void onItemContainerChanged(ItemContainerChanged event)
+    {
+        if (!config.enabled() || (config.enabled() && (!config.maniacalMonkeys() || !isInManiacalMonkeysArea()))) return;
+
+        if (event.getContainerId() != InventoryID.INV) return;
+
+        ItemContainer inv = event.getItemContainer();
+        if (inv == null)
+            return;
+
+        int bananas = 0;
+        for (Item item : inv.getItems())
+            if (item != null && item.getId() == ItemID.BANANA)
+                bananas += 1;
+
+        //Check for any difference in bananas - player could be buggering around in inv
+        if (bananas != lastBananas)
+            session.updateInstant(NotificationType.MANIACALMONKEYS);
+
+        lastBananas = bananas;
     }
 
     boolean areSelectedSkillsActive() {
