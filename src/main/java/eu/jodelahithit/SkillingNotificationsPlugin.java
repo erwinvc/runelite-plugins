@@ -76,7 +76,6 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
-        xpCache = new int[Skill.values().length];
         keyManager.registerKeyListener(inputListener);
         updateSelectedSkills();
         panel = new SkillingNotificationsPanel(configManager);
@@ -124,11 +123,11 @@ public class SkillingNotificationsPlugin extends Plugin {
             lastPlayerLocation = playerLocation;
         }
 
-        if(Utils.isInAnimation(Constants.SAILING_HELM_ANIMATIONS, client)){
+        if (Utils.isInAnimation(Constants.SAILING_HELM_ANIMATIONS, client)) {
             session.updateSailingInstant();
         }
 
-        if (Utils.isInAnimation(Constants.MONKEY_ANIMS, client)){
+        if (Utils.isInAnimation(Constants.MONKEY_ANIMS, client)) {
             session.updateInstant(NotificationType.MANIACALMONKEYS);
         }
 
@@ -164,7 +163,6 @@ public class SkillingNotificationsPlugin extends Plugin {
     @Subscribe
     public void onHitsplatApplied(HitsplatApplied hitsplatApplied) {
         if (!config.enabled()) return;
-        Actor actor = hitsplatApplied.getActor();
         Hitsplat hitsplat = hitsplatApplied.getHitsplat();
         if (hitsplat.isMine()) {
             session.updateInstant(NotificationType.COMBAT);
@@ -178,7 +176,9 @@ public class SkillingNotificationsPlugin extends Plugin {
         final WorldPoint trapLocation = gameObject.getWorldLocation();
 
         if (id == ObjectID.MONKEY_TRAP || id == ObjectID.LARGE_BOULDER_28825) {
-            if (client.getLocalPlayer().getWorldLocation().distanceTo(trapLocation) <= 2) {
+            Player localPlayer = client.getLocalPlayer();
+            if (localPlayer != null
+                    && localPlayer.getWorldLocation().distanceTo(trapLocation) <= 2) {
                 lastManiacalMonkeyRockTile = event.getTile();
             }
             return;
@@ -197,9 +197,11 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event) {
-        if (event.getMenuOption().equals(WALK_HERE) || event.getMenuOption().equals(SET_HEADING)) session.updateWalkingInstant();
+        if (event.getMenuOption().equals(WALK_HERE) || event.getMenuOption().equals(SET_HEADING))
+            session.updateWalkingInstant();
         else {
-            if (!config.enabled() || (config.enabled() && (!config.maniacalMonkeys() || !isInManiacalMonkeysArea()))) return;
+            if (!config.enabled() || (config.enabled() && (!config.maniacalMonkeys() || !isInManiacalMonkeysArea())))
+                return;
             else if (event.getMenuOption().equals(DROP) && (event.getItemId() == ItemID.BASKET_EMPTY || event.getItemId() == ItemID.DAMAGED_BALLISTA_ROPE))
                 session.updateInstant(NotificationType.MANIACALMONKEYS);
             else if (event.getMenuOption().equals(SET_TRAP) || event.getMenuOption().equals(CHECK))
@@ -209,9 +211,9 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     //Subscribe to item container event for inventory banana checks for maniacal monkeys
     @Subscribe
-    public void onItemContainerChanged(ItemContainerChanged event)
-    {
-        if (!config.enabled() || (config.enabled() && (!config.maniacalMonkeys() || !isInManiacalMonkeysArea()))) return;
+    public void onItemContainerChanged(ItemContainerChanged event) {
+        if (!config.enabled() || (config.enabled() && (!config.maniacalMonkeys() || !isInManiacalMonkeysArea())))
+            return;
 
         if (event.getContainerId() != InventoryID.INV) return;
 
@@ -275,6 +277,9 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     boolean isInManiacalMonkeysArea() {
-        return ArrayUtils.contains(client.getMapRegions(), MANIACAL_MONKEYS_REGION_ID);
+        return ArrayUtils.contains(
+                client.getTopLevelWorldView().getMapRegions(),
+                MANIACAL_MONKEYS_REGION_ID
+        );
     }
 }
