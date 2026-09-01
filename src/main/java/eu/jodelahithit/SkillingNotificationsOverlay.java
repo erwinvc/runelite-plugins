@@ -59,27 +59,50 @@ public class SkillingNotificationsOverlay extends Overlay {
     public Dimension render(Graphics2D graphics) {
 
         boolean shouldRender = plugin.shouldRenderOverlay();
-        if(config.notificationSound() && shouldRender && !previousShouldRender){
+        if (config.notificationSound() && shouldRender && !previousShouldRender) {
             Toolkit.getDefaultToolkit().beep();
         }
         previousShouldRender = shouldRender;
 
         Color fadedColor = getFadedColor(config.overlayColor(), shouldRender);
+        Color textColor = ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP);
+
+        int canvasWidth = client.getCanvasWidth();
+        int canvasHeight = client.getCanvasHeight();
+
+        boolean shouldDisplayNotification = Session.checkInstant(notificationInstant, 2000);
+
         if (shouldRender || fadeValue > 0.05f) {
             boolean canFlash = fadeValue > 0.95f || config.notificationFade() == 0;
-            if (canFlash && config.flash() && client.getGameCycle() % 40 >= 20) return null;
-            Color color = graphics.getColor();
-            graphics.setColor(fadedColor);
-            graphics.fill(new Rectangle(client.getCanvas().getSize()));
-            graphics.setColor(color);
-            if (!config.disableOverlayText()) {
-                Point locationOffset = new Point(client.getCanvasWidth() / 2, client.getCanvasHeight() / 8 + Utils.getStringHeight(graphics));
-                Utils.renderTextCentered(graphics, locationOffset, "Skilling Notification", ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP));
+            boolean shouldFlash = canFlash && config.flash() && client.getGameCycle() % 40 >= 20;
+            if (shouldFlash) {
+                Color color = graphics.getColor();
+                graphics.setColor(fadedColor);
+
+                graphics.fillRect(0, 0, canvasWidth, canvasHeight);
+
+                graphics.fill(new Rectangle(client.getCanvas().getSize()));
+                graphics.setColor(color);
+
+                if (!config.disableOverlayText() && !shouldDisplayNotification) {
+                    Utils.renderTextCentered(
+                            graphics,
+                            canvasWidth / 2,
+                            canvasHeight / 8 + Utils.getStringHeight(graphics),
+                            "Skilling Notification",
+                            textColor
+                    );
+                }
             }
         }
-        if (Session.checkInstant(notificationInstant, 2000)) {
-            Point location = new Point(client.getCanvasWidth() / 2, client.getCanvasHeight() / 8);
-            Utils.renderTextCentered(graphics, location, notificationText, ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP));
+        if (shouldDisplayNotification) {
+            Utils.renderTextCentered(
+                    graphics,
+                    canvasWidth / 2,
+                    canvasHeight / 8 + Utils.getStringHeight(graphics),
+                    notificationText,
+                    textColor
+            );
         }
         return null;
     }

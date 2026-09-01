@@ -16,9 +16,9 @@ import static net.runelite.api.gameval.InterfaceID.Wornitems.EQUIPMENT;
 @Slf4j
 public class Utils {
 
-    static void printAnimation(Client client){
+    static void printAnimation(Client client) {
         Player player = client.getLocalPlayer();
-        if(player == null) return;
+        if (player == null) return;
         int anim = player.getAnimation();
         log.debug("Skilling-notifications: " + anim);
     }
@@ -33,16 +33,18 @@ public class Utils {
         return metrics.getHeight();
     }
 
-    public static void renderTextCentered(Graphics2D graphics, Point txtLoc, String text, Color color) {
-        if (!Strings.isNullOrEmpty(text)) {
-            int x = txtLoc.getX();
-            int y = txtLoc.getY();
-            int halfStringWidth = getStringWidth(graphics, text) / 2;
-            graphics.setColor(Color.BLACK);
-            graphics.drawString(text, x - halfStringWidth+ 1, y + 1);
-            graphics.setColor(ColorUtil.colorWithAlpha(color, 255));
-            graphics.drawString(text, x - halfStringWidth, y);
+    public static void renderTextCentered(Graphics2D graphics, int x, int y, String text, Color color) {
+        if (Strings.isNullOrEmpty(text)) {
+            return;
         }
+
+        int halfWidth = graphics.getFontMetrics().stringWidth(text) / 2;
+
+        graphics.setColor(Color.BLACK);
+        graphics.drawString(text, x - halfWidth + 1, y + 1);
+
+        graphics.setColor(ColorUtil.colorWithAlpha(color, 255));
+        graphics.drawString(text, x - halfWidth, y);
     }
 
     public static int getAttackSpeed(Client client, ItemManager itemManager) {
