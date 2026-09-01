@@ -88,7 +88,7 @@ public class SkillingNotificationsPlugin extends Plugin {
 
         updateSelectedSkills();
 
-        panel = new SkillingNotificationsPanel(configManager);
+        panel = new SkillingNotificationsPanel(config, configManager);
 
         keyManager.registerKeyListener(inputListener);
 

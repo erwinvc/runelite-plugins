@@ -18,12 +18,12 @@ public class SkillingNotificationsListener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (config.toggle().matches(e)) {
-            boolean enabled = !Boolean.parseBoolean(configManager.getConfiguration(SkillingNotificationsConfig.CONFIG_GROUP, "enabled"));
+            boolean enabled = !config.enabled();
             configManager.setConfiguration(SkillingNotificationsConfig.CONFIG_GROUP, "enabled", enabled);
             plugin.getPanel().repaintConfigButtons();
             plugin.showNotification(enabled ? "Enabled skilling notifications" : "Disabled skilling notifications");
         } else if (config.toggleFlash().matches(e)) {
-            boolean enabled = !Boolean.parseBoolean(configManager.getConfiguration(SkillingNotificationsConfig.CONFIG_GROUP, "notificationFlash"));
+            boolean enabled = !config.flash();
             configManager.setConfiguration(SkillingNotificationsConfig.CONFIG_GROUP, "notificationFlash", enabled);
             plugin.getPanel().repaintConfigButtons();
             plugin.showNotification(enabled ? "Enabled notification flash" : "Disabled notification flash");

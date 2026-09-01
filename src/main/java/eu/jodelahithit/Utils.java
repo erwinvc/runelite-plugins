@@ -3,13 +3,11 @@ package eu.jodelahithit;
 import lombok.extern.slf4j.Slf4j;
 import com.google.common.base.Strings;
 import net.runelite.api.*;
-import net.runelite.api.Point;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.ItemStats;
 import net.runelite.client.util.ColorUtil;
 
 import java.awt.*;
-import java.util.Set;
 
 import static net.runelite.api.gameval.InterfaceID.Wornitems.EQUIPMENT;
 

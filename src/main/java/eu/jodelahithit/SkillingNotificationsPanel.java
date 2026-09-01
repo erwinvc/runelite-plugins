@@ -19,10 +19,12 @@ import java.util.Map;
 public class SkillingNotificationsPanel extends PluginPanel {
     private final Map<String, BufferedImage> iconsCache = new HashMap<>();
     private final ConfigManager configManager;
+    private final SkillingNotificationsConfig config;
     private final JPanel skillsPanel, enabledPanel, flashingPanel, soundPanel, movingPanel, customPanel;
 
-    SkillingNotificationsPanel(ConfigManager configManager) {
+    SkillingNotificationsPanel(SkillingNotificationsConfig config, ConfigManager configManager) {
         super();
+        this.config = config;
         this.configManager = configManager;
         setBorder(new EmptyBorder(5, 5, 5, 5));
         setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -116,7 +118,7 @@ public class SkillingNotificationsPanel extends PluginPanel {
         addButton(soundPanel, "notificationSound", "Notification sound", "Plays a sound when the player is idle");
         addButton(customPanel, "CUSTOMXP", "Custom XP", "Displays notifications when XP drops of the configured threshold are not received");
 
-        SpinnerModel model = new SpinnerNumberModel(Integer.parseInt(configManager.getConfiguration(SkillingNotificationsConfig.CONFIG_GROUP, "customXPValue")), 1, Integer.MAX_VALUE, 10);
+        SpinnerModel model = new SpinnerNumberModel(config.customXPValue(), 1, Integer.MAX_VALUE, 10);
         JSpinner spinner = new JSpinner(model);
         spinner.addChangeListener(ev -> configManager.setConfiguration(SkillingNotificationsConfig.CONFIG_GROUP, "customXPValue", spinner.getValue()));
         customPanel.add(spinner);

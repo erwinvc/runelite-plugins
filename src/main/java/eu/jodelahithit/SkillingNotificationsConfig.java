@@ -268,6 +268,7 @@ public interface SkillingNotificationsConfig extends Config {
         return false;
     }
 
+    @Range(min = 1)
     @ConfigItem(
             keyName = "customXPValue",
             name = "Custom XP Amount",
@@ -286,6 +287,7 @@ public interface SkillingNotificationsConfig extends Config {
     )
     String delays = "Extra Delays";
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "WALKINGDELAYV2",
             name = "Movement delay",
@@ -297,6 +299,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 2000;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "COOKINGDELAYV2",
             name = "Cooking delay",
@@ -308,6 +311,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "CRAFTINGDELAYV2",
             name = "Crafting delay",
@@ -319,6 +323,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "FISHINGDELAYV2",
             name = "Fishing delay",
@@ -330,6 +335,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "FIREMAKINGDELAYV2",
             name = "Firemaking delay",
@@ -341,6 +347,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "FLETCHINGDELAYV2",
             name = "Fletching delay",
@@ -352,6 +359,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "HERBLOREDELAYV2",
             name = "Herblore delay",
@@ -363,6 +371,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "MININGDELAYV2",
             name = "Mining delay",
@@ -374,6 +383,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "WOODCUTTINGDELAYV2",
             name = "Woodcutting delay",
@@ -385,6 +395,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "SMITHINGDELAYV2",
             name = "Smithing delay",
@@ -396,6 +407,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "SAILINGDELAYV2",
             name = "Sailing delay",
@@ -407,6 +419,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "MANIACALMONKEYSDELAYV2",
             name = "Maniacal monkeys delay",
@@ -417,6 +430,8 @@ public interface SkillingNotificationsConfig extends Config {
     default int maniacalMonkeysDelay() {
         return 0;
     }
+
+    @Range(min = 0)
     @ConfigItem(
             keyName = "LUNARDELAYV2",
             name = "Lunar delay",
@@ -428,6 +443,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "COMBATDELAYV2",
             name = "Combat delay",
@@ -439,6 +455,7 @@ public interface SkillingNotificationsConfig extends Config {
         return 0;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "CUSTOMXPDELAYV2",
             name = "Custom XP delay",

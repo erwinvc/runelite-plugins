@@ -1,8 +1,5 @@
 package eu.jodelahithit;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.EnumMap;
 import java.util.concurrent.TimeUnit;
 
 public class Session {
