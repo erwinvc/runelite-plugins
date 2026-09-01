@@ -18,9 +18,12 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import static eu.jodelahithit.WintertodtInterruptType.*;
-import static net.runelite.api.AnimationID.*;
-import static net.runelite.api.ItemID.BRUMA_KINDLING;
-import static net.runelite.api.ItemID.BRUMA_ROOT;
+import static net.runelite.api.AnimationID.IDLE;
+
+import net.runelite.api.gameval.AnimationID;
+import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
+import net.runelite.api.gameval.VarbitID;
 
 @PluginDescriptor(
         name = "Wintertodt Notifications",
@@ -28,13 +31,18 @@ import static net.runelite.api.ItemID.BRUMA_ROOT;
         tags = {"notifications", "wintertodt"}
 )
 public class WintertodtNotificationsPlugin extends Plugin {
+    private static final int MOVEMENT_COOLDOWN_TICKS = 2;
+    private static final int ACTION_TIMEOUT_TICKS = 5;
+    private static final int IDLE_ANIMATION = -1;
+
     private static final int WINTERTODT_REGION = 6462;
     private boolean isInWintertodt;
-    private Instant walkingInstant = Instant.now();
-    private Instant lastActionTime = Instant.now();
     private WintertodtActivity currentActivity = WintertodtActivity.IDLE;
     private int timerValue;
     private LocalPoint lastPlayerLocation;
+
+    private int ticksSinceMovement = MOVEMENT_COOLDOWN_TICKS;
+    private int lastActionTick = -1;
 
     @Inject
     Client client;
@@ -53,16 +61,26 @@ public class WintertodtNotificationsPlugin extends Plugin {
         return configManager.getConfig(WintertodtNotificationsConfig.class);
     }
 
-    @Override
-    protected void startUp() throws Exception {
+    private void resetState() {
+        isInWintertodt = false;
         currentActivity = WintertodtActivity.IDLE;
+        timerValue = -1;
+        lastPlayerLocation = null;
+        lastActionTick = -1;
+        ticksSinceMovement = MOVEMENT_COOLDOWN_TICKS;
+    }
+
+
+    @Override
+    protected void startUp() {
+        resetState();
         overlayManager.add(overlay);
     }
 
     @Override
-    protected void shutDown() throws Exception {
+    protected void shutDown() {
         overlayManager.remove(overlay);
-        currentActivity = WintertodtActivity.IDLE;
+        resetState();
     }
 
     private boolean isInWintertodtRegion() {
@@ -77,49 +95,55 @@ public class WintertodtNotificationsPlugin extends Plugin {
     public void onGameTick(GameTick gameTick) {
         if (!isInWintertodtRegion()) {
             if (isInWintertodt) {
-                currentActivity = WintertodtActivity.IDLE;
+                resetState();
             }
 
-            isInWintertodt = false;
             return;
         }
 
-        if (!isInWintertodt) {
-            currentActivity = WintertodtActivity.IDLE;
-        }
-        isInWintertodt = true;
-
         Player player = client.getLocalPlayer();
-        if (player != null) {
-            LocalPoint playerLocation = player.getLocalLocation();
-            if (!playerLocation.equals(lastPlayerLocation)) {
-                walkingInstant = Instant.now();
-            }
-            lastPlayerLocation = playerLocation;
+
+        if (!isInWintertodt) {
+            resetState();
+            isInWintertodt = true;
+
+            timerValue = client.getVarbitValue(
+                    VarbitID.WINT_TRANSMIT_RESPAWNDELAY);
         }
 
-        checkActionTimeout();
+        updateMovementState(player);
+        checkActionTimeout(player);
     }
 
     @Subscribe
-    public void onVarbitChanged(VarbitChanged varbitChanged) {
-        timerValue = client.getVar(Varbits.WINTERTODT_TIMER);
+    public void onVarbitChanged(VarbitChanged event) {
+        if (isInWintertodt && event.getVarbitId() == VarbitID.WINT_TRANSMIT_RESPAWNDELAY) {
+            timerValue = event.getValue();
+        }
     }
 
-    private void checkActionTimeout() {
-        if (currentActivity == WintertodtActivity.IDLE) {
+    private void updateMovementState(Player player) {
+        LocalPoint playerLocation = player.getLocalLocation();
+
+        if (!playerLocation.equals(lastPlayerLocation)) {
+            ticksSinceMovement = 0;
+        } else {
+            ticksSinceMovement = Math.min(
+                    ticksSinceMovement + 1,
+                    MOVEMENT_COOLDOWN_TICKS);
+        }
+
+        lastPlayerLocation = playerLocation;
+    }
+
+    private void checkActionTimeout(Player player) {
+        if (currentActivity == WintertodtActivity.IDLE || player.getAnimation() != IDLE_ANIMATION || lastActionTick < 0) {
             return;
         }
 
-        int currentAnimation = client.getLocalPlayer() != null ? client.getLocalPlayer().getAnimation() : -1;
-        if (currentAnimation != IDLE || lastActionTime == null) {
-            return;
-        }
+        int elapsedTicks = client.getTickCount() - lastActionTick;
 
-        Duration actionTimeout = Duration.ofSeconds(3);
-        Duration sinceAction = Duration.between(lastActionTime, Instant.now());
-
-        if (sinceAction.compareTo(actionTimeout) >= 0) {
+        if (elapsedTicks >= ACTION_TIMEOUT_TICKS) {
             currentActivity = WintertodtActivity.IDLE;
         }
     }
@@ -193,48 +217,51 @@ public class WintertodtNotificationsPlugin extends Plugin {
 
         final int animId = local.getAnimation();
         switch (animId) {
-            case WOODCUTTING_BRONZE:
-            case WOODCUTTING_IRON:
-            case WOODCUTTING_STEEL:
-            case WOODCUTTING_BLACK:
-            case WOODCUTTING_MITHRIL:
-            case WOODCUTTING_ADAMANT:
-            case WOODCUTTING_RUNE:
-            case WOODCUTTING_GILDED:
-            case WOODCUTTING_DRAGON:
-            case WOODCUTTING_DRAGON_OR:
-            case WOODCUTTING_INFERNAL:
-            case WOODCUTTING_3A_AXE:
-            case WOODCUTTING_CRYSTAL:
-            case WOODCUTTING_TRAILBLAZER:
-            case WOODCUTTING_2H_BRONZE:
-	    case WOODCUTTING_2H_IRON:
-	    case WOODCUTTING_2H_STEEL:	
-	    case WOODCUTTING_2H_BLACK:
-	    case WOODCUTTING_2H_MITHRIL:
-	    case WOODCUTTING_2H_ADAMANT:
-	    case WOODCUTTING_2H_RUNE:
-	    case WOODCUTTING_2H_DRAGON:
-	    case WOODCUTTING_2H_3A:
-	    case WOODCUTTING_2H_CRYSTAL:
-	    case WOODCUTTING_2H_CRYSTAL_INACTIVE:
+            case AnimationID.HUMAN_WOODCUTTING_BRONZE_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_IRON_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_STEEL_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_BLACK_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_MITHRIL_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_ADAMANT_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_RUNE_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_GILDED_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_DRAGON_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_TRAILBLAZER_AXE_NO_INFERNAL:
+            case AnimationID.HUMAN_WOODCUTTING_INFERNAL_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_3A_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_CRYSTAL_AXE:
+            case AnimationID.HUMAN_OPENHEAVYCHEST:
+            case AnimationID.HUMAN_WOODCUTTING_TRAILBLAZER_RELOADED_AXE_NO_INFERNAL:
+            case AnimationID.HUMAN_WOODCUTTING_TRAILBLAZER_AXE:
+            case AnimationID.HUMAN_WOODCUTTING_TRAILBLAZER_RELOADED_AXE:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_BRONZE:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_IRON:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_STEEL:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_BLACK:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_MITHRIL:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_ADAMANT:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_RUNE:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_DRAGON:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_CRYSTAL:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_CRYSTAL_INACTIVE:
+            case AnimationID.FORESTRY_2H_AXE_CHOPPING_3A:
                 setActivity(WintertodtActivity.WOODCUTTING);
                 break;
 
-            case FLETCHING_BOW_CUTTING:
+            case AnimationID.HUMAN_FLETCHING:
                 setActivity(WintertodtActivity.FLETCHING);
                 break;
 
-            case LOOKING_INTO:
+            case AnimationID.HUMAN_PICKUPTABLE:
                 setActivity(WintertodtActivity.FEEDING_BRAZIER);
                 break;
 
-            case FIREMAKING:
+            case AnimationID.HUMAN_CREATEFIRE:
                 setActivity(WintertodtActivity.LIGHTING_BRAZIER);
                 break;
 
-            case CONSTRUCTION:
-            case CONSTRUCTION_IMCANDO:
+            case AnimationID.HUMAN_POH_BUILD:
+            case AnimationID.HUMAN_POH_BUILD_IMCANDO_HAMMER:
                 setActivity(WintertodtActivity.FIXING_BRAZIER);
                 break;
         }
@@ -243,19 +270,19 @@ public class WintertodtNotificationsPlugin extends Plugin {
     @Subscribe
     public void onItemContainerChanged(ItemContainerChanged event) {
         final ItemContainer container = event.getItemContainer();
-        if (!isInWintertodt || container != client.getItemContainer(InventoryID.INVENTORY)) {
+        if (!isInWintertodt || container != client.getItemContainer(InventoryID.INV)) {
             return;
         }
+
         int numLogs = 0;
         int numKindling = 0;
 
-        final Item[] inv = container.getItems();
-        for (Item item : inv) {
+        for (Item item : container.getItems()) {
             switch (item.getId()) {
-                case BRUMA_ROOT:
+                case ItemID.WINT_BRUMA_ROOT:
                     ++numLogs;
                     break;
-                case BRUMA_KINDLING:
+                case ItemID.WINT_BRUMA_KINDLING:
                     ++numKindling;
                     break;
             }
@@ -268,15 +295,13 @@ public class WintertodtNotificationsPlugin extends Plugin {
         }
     }
 
-    private void setActivity(WintertodtActivity action) {
-        if (action != WintertodtActivity.IDLE) {
-            walkingInstant = walkingInstant.minus(1, ChronoUnit.MINUTES);
-        }
-        currentActivity = action;
-        lastActionTime = Instant.now();
+    private void setActivity(WintertodtActivity activity) {
+        currentActivity = activity;
+        lastActionTick = client.getTickCount();
+        ticksSinceMovement = MOVEMENT_COOLDOWN_TICKS;
     }
 
     public boolean shouldRenderOverlay() {
-        return isInWintertodt && currentActivity == WintertodtActivity.IDLE && timerValue == 0 && !Utils.checkInstant(walkingInstant, 1.0f);
+        return isInWintertodt && currentActivity == WintertodtActivity.IDLE && timerValue == 0 && ticksSinceMovement >= MOVEMENT_COOLDOWN_TICKS;
     }
 }
