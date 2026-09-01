@@ -66,6 +66,7 @@ public interface SkillingNotificationsConfig extends Config {
         return false;
     }
 
+    @Range(min = 0)
     @ConfigItem(
             keyName = "notificationFade",
             name = "Notification fade duration",
