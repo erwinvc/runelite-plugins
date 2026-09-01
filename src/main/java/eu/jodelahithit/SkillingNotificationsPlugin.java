@@ -78,17 +78,30 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
-        keyManager.registerKeyListener(inputListener);
+        session = new Session(this);
+
+        xpCache = new int[Skill.values().length];
+        xpCacheInitialized = false;
+        lastPlayerLocation = null;
+        lastManiacalMonkeyRockTile = null;
+        lastBananas = 0;
+
         updateSelectedSkills();
+
         panel = new SkillingNotificationsPanel(configManager);
+
+        keyManager.registerKeyListener(inputListener);
+
         navigationButton = NavigationButton.builder()
                 .tooltip("Skilling Notifications")
-                .icon(ICON).priority(10).panel(panel)
+                .icon(ICON)
+                .priority(10)
+                .panel(panel)
                 .build();
 
+        keyManager.registerKeyListener(inputListener);
         clientToolbar.addNavigation(navigationButton);
         overlayManager.add(overlay);
-        session = new Session(this);
 
         xpCache = new int[Skill.values().length];
         if (client.getGameState() == GameState.LOGGED_IN) {
@@ -135,7 +148,7 @@ public class SkillingNotificationsPlugin extends Plugin {
             session.updateSailingInstant();
         }
 
-        if (!isInManiacalMonkeysArea() || lastManiacalMonkeyRockTile != null) {
+        if (selectedNotificationTypes.contains(NotificationType.MANIACALMONKEYS) && (!isInManiacalMonkeysArea() || lastManiacalMonkeyRockTile != null)) {
             session.updateInstant(NotificationType.MANIACALMONKEYS);
         }
     }
