@@ -2,7 +2,7 @@ package eu.jodelahithit;
 
 import com.google.common.collect.ImmutableSet;
 import net.runelite.api.gameval.ObjectID;
-
+import net.runelite.api.AnimationID;
 import java.util.Set;
 
 import static net.runelite.api.gameval.AnimationID.*;
@@ -441,5 +441,10 @@ public class Constants {
             ObjectID.HUNTING_MONKEYTRAP_FULL_1
             //ObjectID.HUNTING_MONKEYTRAP_TRAPPING_0,
             //ObjectID.HUNTING_MONKEYTRAP_TRAPPING_1
+    );
+
+    static final Set<Integer> MONKEY_ANIMS = ImmutableSet.of(
+            AnimationID.HUNTER_LAY_MANIACAL_MONKEY_BOULDER_TRAP,
+            7261 //Player maniacal boulder check animation - Not in AnimationID
     );
 }
