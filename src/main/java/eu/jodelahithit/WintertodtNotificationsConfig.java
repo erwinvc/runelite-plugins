@@ -28,16 +28,6 @@ public interface WintertodtNotificationsConfig extends Config
         return false;
     }
 
-    @ConfigItem(
-            keyName = "disableOverlayText",
-            name = "Disable overlay text",
-            description = "Disable the \"Wintertodt Notification\" text on the overlay",
-            position = 2
-    )
-    default boolean disableOverlayText() {
-        return false;
-    }
-
     @Range(
             min = 0,
             max = 2000
@@ -47,10 +37,32 @@ public interface WintertodtNotificationsConfig extends Config
             keyName = "notificationFade",
             name = "Fade duration",
             description = "Time taken to fade the notification in or out",
-            position = 3
+            position = 2
     )
     default int notificationFade()
     {
-        return 250;
+        return 150;
+    }
+
+    @ConfigItem(
+            keyName = "showInterruptionText",
+            name = "Show interruption reason",
+            description = "Display what interrupted the current action on the overlay",
+            position = 3
+    )
+    default boolean showInterruptionText()
+    {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "nativeNotification",
+            name = "Native notification",
+            description = "Send a RuneLite notification when an action is interrupted",
+            position = 4
+    )
+    default boolean nativeNotification()
+    {
+        return false;
     }
 }

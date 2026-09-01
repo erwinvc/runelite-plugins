@@ -1,12 +1,9 @@
 package eu.jodelahithit;
 
 import com.google.common.base.Strings;
-import net.runelite.api.Point;
 import net.runelite.client.util.ColorUtil;
 
 import java.awt.*;
-import java.time.Duration;
-import java.time.Instant;
 
 public class Utils {
     public static int getStringWidth(Graphics graphics, String text) {

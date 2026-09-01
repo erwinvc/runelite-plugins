@@ -12,13 +12,10 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.Notifier;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 import static eu.jodelahithit.WintertodtInterruptType.*;
-import static net.runelite.api.AnimationID.IDLE;
 
 import net.runelite.api.gameval.AnimationID;
 import net.runelite.api.gameval.InventoryID;
@@ -44,6 +41,9 @@ public class WintertodtNotificationsPlugin extends Plugin {
     private int ticksSinceMovement = MOVEMENT_COOLDOWN_TICKS;
     private int lastActionTick = -1;
 
+    private int previousRootCount = -1;
+    private int previousKindlingCount = -1;
+
     @Inject
     Client client;
 
@@ -55,6 +55,9 @@ public class WintertodtNotificationsPlugin extends Plugin {
 
     @Inject
     private OverlayManager overlayManager;
+
+    @Inject
+    private Notifier nativeNotifier;
 
     @Provides
     WintertodtNotificationsConfig getConfig(ConfigManager configManager) {
@@ -69,6 +72,8 @@ public class WintertodtNotificationsPlugin extends Plugin {
         lastPlayerLocation = null;
         lastActionTick = -1;
         ticksSinceMovement = MOVEMENT_COOLDOWN_TICKS;
+        previousRootCount = -1;
+        previousKindlingCount = -1;
     }
 
 
@@ -92,6 +97,21 @@ public class WintertodtNotificationsPlugin extends Plugin {
         return false;
     }
 
+    private void initializeInventoryCounts() {
+        ItemContainer inventory = client.getItemContainer(InventoryID.INV);
+
+        if (inventory == null) {
+            previousRootCount = 0;
+            previousKindlingCount = 0;
+            return;
+        }
+
+        previousRootCount = inventory.count(ItemID.WINT_BRUMA_ROOT);
+
+        previousKindlingCount = inventory.count(ItemID.WINT_BRUMA_KINDLING);
+    }
+
+
     @Subscribe
     public void onGameTick(GameTick gameTick) {
         if (!isInWintertodtRegion()) {
@@ -108,8 +128,9 @@ public class WintertodtNotificationsPlugin extends Plugin {
             resetState();
             isInWintertodt = true;
 
-            timerValue = client.getVarbitValue(
-                    VarbitID.WINT_TRANSMIT_RESPAWNDELAY);
+            timerValue = client.getVarbitValue(VarbitID.WINT_TRANSMIT_RESPAWNDELAY);
+
+            initializeInventoryCounts();
         }
 
         updateMovementState(player);
@@ -161,47 +182,53 @@ public class WintertodtNotificationsPlugin extends Plugin {
             return;
         }
 
-        MessageNode messageNode = chatMessage.getMessageNode();
-        final WintertodtInterruptType interruptType;
+        String message = chatMessage.getMessageNode().getValue();
 
-        if (messageNode.getValue().startsWith("You carefully fletch the root")) {
-            setActivity(WintertodtActivity.FLETCHING);
-            return;
-        }
+        if (message.startsWith("You carefully fletch the root")) {
+            ItemContainer inventory = client.getItemContainer(InventoryID.INV);
 
-        if (messageNode.getValue().startsWith("The cold of")) {
-            interruptType = COLD;
-        } else if (messageNode.getValue().startsWith("The freezing cold attack")) {
-            interruptType = SNOWFALL;
-        } else if (messageNode.getValue().startsWith("The brazier is broken and shrapnel")) {
-            interruptType = BRAZIER;
-        } else if (messageNode.getValue().startsWith("You have run out of bruma roots")) {
-            interruptType = WintertodtInterruptType.OUT_OF_ROOTS;
-        } else if (messageNode.getValue().startsWith("Your inventory is too full")) {
-            interruptType = WintertodtInterruptType.INVENTORY_FULL;
-        } else if (messageNode.getValue().startsWith("You fix the brazier")) {
-            interruptType = WintertodtInterruptType.FIXED_BRAZIER;
-        } else if (messageNode.getValue().startsWith("You light the brazier")) {
-            interruptType = WintertodtInterruptType.LIT_BRAZIER;
-        } else if (messageNode.getValue().startsWith("The brazier has gone out.")) {
-            interruptType = WintertodtInterruptType.BRAZIER_WENT_OUT;
-        } else if (messageNode.getValue().startsWith("Congratulations, you've just advanced your")) {
-            interruptType = WintertodtInterruptType.LEVEL_UP;
-        } else {
-            return;
-        }
-
-        boolean wasInterrupted = false;
-
-        if (interruptType == SNOWFALL || interruptType == COLD || interruptType == BRAZIER) {
-            if (currentActivity != WintertodtActivity.WOODCUTTING && currentActivity != WintertodtActivity.IDLE) {
-                wasInterrupted = true;
+            if (inventory != null && inventory.count(ItemID.WINT_BRUMA_ROOT) > 0) {
+                setActivity(WintertodtActivity.FLETCHING);
             }
-        } else wasInterrupted = true;
+
+            return;
+        }
+
+        WintertodtInterruptType interruptType = WintertodtInterruptType.fromMessage(message);
+
+        if (interruptType == null) {
+            return;
+        }
+
+        boolean hadActiveActivity = currentActivity != WintertodtActivity.IDLE;
+        boolean isDamageInterruption = interruptType == COLD || interruptType == SNOWFALL || interruptType == BRAZIER;
+        boolean wasInterrupted = hadActiveActivity && (!isDamageInterruption || currentActivity != WintertodtActivity.WOODCUTTING);
 
         if (wasInterrupted) {
-            currentActivity = WintertodtActivity.IDLE;
+            interruptCurrentActivity(interruptType);
         }
+    }
+
+    private void interruptCurrentActivity(WintertodtInterruptType interruptType) {
+        if (currentActivity == WintertodtActivity.IDLE) {
+            return;
+        }
+
+        WintertodtActivity interruptedActivity = currentActivity;
+
+        if (interruptType.hasNotificationText()) {
+            String message = interruptType.getNotificationText() + " stopped " + interruptedActivity.getDisplayName();
+
+            if (config.showInterruptionText()) {
+                overlay.showInterruption(message);
+            }
+
+            if (config.nativeNotification()) {
+                nativeNotifier.notify("Wintertodt: " + message);
+            }
+        }
+
+        currentActivity = WintertodtActivity.IDLE;
     }
 
     @Subscribe
@@ -275,24 +302,30 @@ public class WintertodtNotificationsPlugin extends Plugin {
             return;
         }
 
-        int numLogs = 0;
-        int numKindling = 0;
+        int numRoots = container.count(ItemID.WINT_BRUMA_ROOT);
+        int numKindling = container.count(ItemID.WINT_BRUMA_KINDLING);
 
-        for (Item item : container.getItems()) {
-            switch (item.getId()) {
-                case ItemID.WINT_BRUMA_ROOT:
-                    ++numLogs;
-                    break;
-                case ItemID.WINT_BRUMA_KINDLING:
-                    ++numKindling;
-                    break;
+        WintertodtInterruptType depletionType = null;
+
+        if (currentActivity == WintertodtActivity.FLETCHING && numRoots == 0) {
+            depletionType = WintertodtInterruptType.OUT_OF_ROOTS;
+        } else if (currentActivity == WintertodtActivity.FEEDING_BRAZIER) {
+            boolean rootsRanOut = previousRootCount > 0 && numRoots == 0 && numRoots < previousRootCount;
+
+            boolean kindlingRanOut = previousKindlingCount > 0 && numKindling == 0 && numKindling < previousKindlingCount;
+
+            if (kindlingRanOut) {
+                depletionType = WintertodtInterruptType.OUT_OF_KINDLING;
+            } else if (rootsRanOut) {
+                depletionType = WintertodtInterruptType.OUT_OF_ROOTS;
             }
         }
 
-        if (numLogs == 0 && currentActivity == WintertodtActivity.FLETCHING) {
-            currentActivity = WintertodtActivity.IDLE;
-        } else if (numLogs == 0 && numKindling == 0 && currentActivity == WintertodtActivity.FEEDING_BRAZIER) {
-            currentActivity = WintertodtActivity.IDLE;
+        previousRootCount = numRoots;
+        previousKindlingCount = numKindling;
+
+        if (depletionType != null) {
+            interruptCurrentActivity(depletionType);
         }
     }
 

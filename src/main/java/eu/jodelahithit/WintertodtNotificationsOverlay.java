@@ -114,15 +114,6 @@ class WintertodtNotificationsOverlay extends Overlay {
             graphics.fillRect(0, 0, canvasWidth, canvasHeight);
 
             graphics.setColor(previousColor);
-
-            if (!config.disableOverlayText() && !interruptionActive) {
-                Utils.renderTextCentered(
-                        graphics,
-                        canvasWidth / 2, canvasHeight / 8 + Utils.getStringHeight(graphics),
-                        "Wintertodt Notification",
-                        textColor
-                );
-            }
         }
 
         if (interruptionActive) {

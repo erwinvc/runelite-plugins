@@ -1,25 +1,22 @@
 package eu.jodelahithit;
 
 public enum WintertodtActivity {
-    IDLE,
-    WOODCUTTING,
-    FLETCHING,
-    FEEDING_BRAZIER,
-    FIXING_BRAZIER,
-    LIGHTING_BRAZIER,
+    IDLE("what you were doing"),
+    WOODCUTTING("woodcutting"),
+    FLETCHING("fletching"),
+    FEEDING_BRAZIER("feeding the brazier"),
+    FIXING_BRAZIER("repairing the brazier"),
+    LIGHTING_BRAZIER("lighting the brazier");
 
-    //CONSTRUCTION(2.0f),
-    //WOODCUTTING(0.1f),
-    //FLETCHING(0.6f),
-    //LIGHTING(2.0f),
-    //BURNING(1.5f),
-    //WALKING(1.0f),
-    //WAITING(1.0f),
-    //EATING(1.0f);
+    private final String displayName;
 
-    //float timeout;
+    WintertodtActivity(String displayName)
+    {
+        this.displayName = displayName;
+    }
 
-    //WintertodtActivity(float delay){
-    //    this.timeout = delay;
-    //}
+    String getDisplayName()
+    {
+        return displayName;
+    }
 }
