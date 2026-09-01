@@ -177,6 +177,9 @@ public class Constants {
             ARCEUUS_CHISEL_ESSENCE
             );
 
+    // Jagex reuses the generic table pickup animation for bleeding an engorged bloodwood tree
+    private static final int HUMAN_BLEEDING_BLOODWOOD_TREE = HUMAN_PICKUPTABLE_WALKMERGE_NOHELD;
+
     static final Set<Integer> WOODCUTTING_ANIMATIONS = ImmutableSet.of(
             HUMAN_WOODCUTTING_TRAILBLAZER_AXE_NO_INFERNAL,
             HUMAN_WOODCUTTING_RUNE_AXE,
@@ -252,7 +255,8 @@ public class Constants {
             HUMAN_CANOEING_CARVE_DRAGON_2H_AXE,
             HUMAN_CANOEING_CARVE_CRYSTAL_2H_AXE,
             HUMAN_CANOEING_CARVE_CRYSTAL_2H_AXE_INACTIVE,
-            HUMAN_CANOEING_CARVE_3A_2H_AXE
+            HUMAN_CANOEING_CARVE_3A_2H_AXE,
+            HUMAN_BLEEDING_BLOODWOOD_TREE
     );
 
     static final Set<Integer> FLETCHING_ANIMATIONS = ImmutableSet.of(
