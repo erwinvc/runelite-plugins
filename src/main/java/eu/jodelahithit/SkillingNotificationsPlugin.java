@@ -268,9 +268,60 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     }
 
-    int getExtraSkillDelay(NotificationType notificationType) {
-        int delay = Integer.parseInt(configManager.getConfiguration(SkillingNotificationsConfig.CONFIG_GROUP, notificationType.name() + "DELAYV2"));
-        if (notificationType == NotificationType.COMBAT) return Utils.getAttackSpeed(client, itemManager) * 600 + delay;
+    int getExtraSkillDelay(NotificationType type) {
+        int delay;
+
+        switch (type) {
+            case COOKING:
+                delay = config.cookingDelay();
+                break;
+            case CRAFTING:
+                delay = config.craftingDelay();
+                break;
+            case FISHING:
+                delay = config.fishingDelay();
+                break;
+            case FIREMAKING:
+                delay = config.firemakingDelay();
+                break;
+            case FLETCHING:
+                delay = config.fletchingDelay();
+                break;
+            case HERBLORE:
+                delay = config.herbloreDelay();
+                break;
+            case MINING:
+                delay = config.miningDelay();
+                break;
+            case WOODCUTTING:
+                delay = config.woodcuttingDelay();
+                break;
+            case SMITHING:
+                delay = config.smithingDelay();
+                break;
+            case SAILING:
+                delay = config.sailingDelay();
+                break;
+            case MANIACALMONKEYS:
+                delay = config.maniacalMonkeysDelay();
+                break;
+            case LUNAR:
+                delay = config.lunarDelay();
+                break;
+            case COMBAT:
+                delay = config.combatDelay();
+                break;
+            case CUSTOMXP:
+                delay = config.customXPDelay();
+                break;
+            default:
+                return 0;
+        }
+
+        if (type == NotificationType.COMBAT) {
+            delay += Utils.getAttackSpeed(client, itemManager) * 600;
+        }
+
         return delay;
     }
 
