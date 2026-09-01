@@ -23,11 +23,12 @@ import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @PluginDescriptor(
@@ -45,7 +46,7 @@ public class SkillingNotificationsPlugin extends Plugin {
     private LocalPoint lastPlayerLocation;
     private Session session;
     private NavigationButton navigationButton;
-    private List<NotificationType> selectedNotificationTypes = new ArrayList<>();
+    private final EnumSet<NotificationType> selectedNotificationTypes = EnumSet.noneOf(NotificationType.class);
     private Tile lastManiacalMonkeyRockTile = null;
     private int[] xpCache;
     private boolean xpCacheInitialized;
@@ -274,8 +275,8 @@ public class SkillingNotificationsPlugin extends Plugin {
         return skills && notMoving;
     }
 
-    public List<NotificationType> getSelectedSkills() {
-        return selectedNotificationTypes;
+    public Set<NotificationType> getSelectedSkills() {
+        return Collections.unmodifiableSet(selectedNotificationTypes);
     }
 
     void updateSelectedSkills() {
