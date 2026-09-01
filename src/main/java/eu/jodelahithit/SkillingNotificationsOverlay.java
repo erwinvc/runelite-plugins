@@ -2,7 +2,6 @@ package eu.jodelahithit;
 
 import com.google.inject.Inject;
 import net.runelite.api.Client;
-import net.runelite.api.Point;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -98,7 +97,6 @@ public class SkillingNotificationsOverlay extends Overlay {
 
             graphics.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            graphics.fill(new Rectangle(client.getCanvas().getSize()));
             graphics.setColor(color);
 
             if (!config.disableOverlayText() && !shouldDisplayNotification) {
