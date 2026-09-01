@@ -261,6 +261,10 @@ public class SkillingNotificationsPlugin extends Plugin {
         lastBananas = bananas;
     }
 
+    void showNotification(String text) {
+        overlay.notify(text);
+    }
+
     private void initializeXpCache() {
         for (Skill skill : Skill.values()) {
             xpCache[skill.ordinal()] = client.getSkillExperience(skill);

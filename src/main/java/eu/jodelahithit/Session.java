@@ -20,20 +20,13 @@ public class Session {
         this.plugin = plugin;
     }
 
-    public static boolean checkInstant(Instant instant, long timeout) {
-        if (instant == null) return false;
-        return Duration.between(instant, Instant.now()).toMillis() < timeout;
-    }
-
     public void updateInstant(NotificationType type) {
         long delayMs = BASE_SKILL_DELAY_MS + Math.max(plugin.getExtraSkillDelay(type), 0);
-
-        skillActiveUntil[type.ordinal()] =
-                System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(delayMs);
+        skillActiveUntil[type.ordinal()] = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(delayMs);
     }
 
     public boolean isSkillActive(NotificationType type) {
-        return System.nanoTime() < skillActiveUntil[type.ordinal()];
+        return skillActiveUntil[type.ordinal()] - System.nanoTime() > 0;
     }
 
     public void updateWalkingInstant() {

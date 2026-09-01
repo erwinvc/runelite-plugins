@@ -8,9 +8,10 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.util.ColorUtil;
 
 import java.awt.*;
-import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 public class SkillingNotificationsOverlay extends Overlay {
+    private static final long NOTIFICATION_DURATION_NANOS = TimeUnit.SECONDS.toNanos(2);
     private static final float TEXT_COLOR_LERP = 0.75f;
     private static final int FLASH_HALF_PERIOD = 20;
 
@@ -19,8 +20,8 @@ public class SkillingNotificationsOverlay extends Overlay {
     private final SkillingNotificationsConfig config;
 
     private long lastFadeTime = System.currentTimeMillis();
-    private static Instant notificationInstant = Instant.now();
-    private static String notificationText = "";
+    private long notificationUntil = 0;
+    private String notificationText = "";
     private boolean previousShouldRender = false;
 
     private int flashStartCycle;
@@ -39,25 +40,27 @@ public class SkillingNotificationsOverlay extends Overlay {
     float fadeValue = 0.0f;
 
     private Color getFadedColor(Color input, boolean overlayEnabled) {
+        long now = System.currentTimeMillis();
+        long elapsed = now - lastFadeTime;
+        lastFadeTime = now;
+
         int fadeDuration = config.notificationFade();
-        if (fadeDuration == 0) {
+        if (fadeDuration == 0)
+        {
             fadeValue = 0.0f;
             return input;
         }
 
-        long now = System.currentTimeMillis();
-        float difference = (now - lastFadeTime) / (float) fadeDuration;
-        lastFadeTime = now;
-
+        float difference = elapsed / (float) fadeDuration;
         fadeValue += overlayEnabled ? difference : -difference;
-
         fadeValue = Utils.clamp01(fadeValue);
 
-        int r = input.getRed();
-        int g = input.getGreen();
-        int b = input.getBlue();
-        int a = input.getAlpha();
-        return new Color(r, g, b, (int) (a * fadeValue));
+        return new Color(
+                input.getRed(),
+                input.getGreen(),
+                input.getBlue(),
+                (int) (input.getAlpha() * fadeValue)
+        );
     }
 
     @Override
@@ -84,7 +87,7 @@ public class SkillingNotificationsOverlay extends Overlay {
         int canvasWidth = client.getCanvasWidth();
         int canvasHeight = client.getCanvasHeight();
 
-        boolean shouldDisplayNotification = Session.checkInstant(notificationInstant, 2000);
+        boolean shouldDisplayNotification = notificationUntil - System.nanoTime() > 0;
 
         if (flashReady && config.flash()) {
             int elapsedCycles = client.getGameCycle() - flashStartCycle;
@@ -122,7 +125,7 @@ public class SkillingNotificationsOverlay extends Overlay {
     }
 
     public void notify(String text) {
-        notificationInstant = Instant.now();
+        notificationUntil = System.nanoTime() + NOTIFICATION_DURATION_NANOS;
         notificationText = text;
     }
 }
