@@ -14,19 +14,30 @@ public class Utils {
         return metrics.stringWidth(text);
     }
 
-    public static void renderTextCentered(Graphics2D graphics, Point txtLoc, String text, Color color) {
-        if (!Strings.isNullOrEmpty(text)) {
-            int x = txtLoc.getX();
-            int y = txtLoc.getY();
-            int halfStringWidth = getStringWidth(graphics, text) / 2;
-            graphics.setColor(Color.BLACK);
-            graphics.drawString(text, x - halfStringWidth+ 1, y + 1);
-            graphics.setColor(ColorUtil.colorWithAlpha(color, 255));
-            graphics.drawString(text, x - halfStringWidth, y);
-        }
+    public static int getStringHeight(Graphics graphics) {
+        FontMetrics metrics = graphics.getFontMetrics();
+        return metrics.getHeight();
     }
 
-    public static boolean checkInstant(Instant instant, float timeout) {
-        return Duration.between(instant, Instant.now()).toMillis() < (timeout * 1000);
+    public static void renderTextCentered(Graphics2D graphics, int x, int y, String text, Color color) {
+        if (Strings.isNullOrEmpty(text)) {
+            return;
+        }
+
+        int halfWidth = graphics.getFontMetrics().stringWidth(text) / 2;
+
+        graphics.setColor(Color.BLACK);
+        graphics.drawString(text, x - halfWidth + 1, y + 1);
+
+        graphics.setColor(ColorUtil.colorWithAlpha(color, 255));
+        graphics.drawString(text, x - halfWidth, y);
+    }
+
+    public static float clamp(float val, float min, float max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
+    public static float clamp01(float val) {
+        return Math.max(0.0f, Math.min(1.0f, val));
     }
 }

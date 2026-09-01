@@ -62,6 +62,7 @@ public class WintertodtNotificationsPlugin extends Plugin {
     }
 
     private void resetState() {
+        overlay.reset();
         isInWintertodt = false;
         currentActivity = WintertodtActivity.IDLE;
         timerValue = -1;

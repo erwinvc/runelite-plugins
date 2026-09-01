@@ -1,9 +1,6 @@
 package eu.jodelahithit;
 
-import net.runelite.client.config.Alpha;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.*;
 
 import java.awt.*;
 
@@ -39,5 +36,21 @@ public interface WintertodtNotificationsConfig extends Config
     )
     default boolean disableOverlayText() {
         return false;
+    }
+
+    @Range(
+            min = 0,
+            max = 2000
+    )
+    @Units(Units.MILLISECONDS)
+    @ConfigItem(
+            keyName = "notificationFade",
+            name = "Fade duration",
+            description = "Time taken to fade the notification in or out",
+            position = 3
+    )
+    default int notificationFade()
+    {
+        return 250;
     }
 }
