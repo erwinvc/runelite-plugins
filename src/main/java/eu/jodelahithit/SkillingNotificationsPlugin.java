@@ -330,9 +330,7 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     boolean isInManiacalMonkeysArea() {
-        return ArrayUtils.contains(
-                client.getTopLevelWorldView().getMapRegions(),
-                MANIACAL_MONKEYS_REGION_ID
-        );
+        Player player = client.getLocalPlayer();
+        return player != null && player.getWorldLocation().getRegionID() == MANIACAL_MONKEYS_REGION_ID;
     }
 }
