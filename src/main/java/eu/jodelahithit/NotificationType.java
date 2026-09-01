@@ -14,7 +14,7 @@ public enum NotificationType {
     WOODCUTTING(Constants.WOODCUTTING_ANIMATIONS, null),
     SMITHING(Constants.SMITHING_ANIMATIONS, null),
     SAILING(Constants.SAILING_ANIMATIONS, null),
-    MANIACALMONKEYS(null, "/eu/jodelahithit/monkey.png"),
+    MANIACALMONKEYS(Constants.MONKEY_ANIMS, "/eu/jodelahithit/monkey.png"),
     LUNAR(Constants.LUNAR_ANIMATIONS, "/eu/jodelahithit/lunar.png"),
     COMBAT(null, null),
     CUSTOMXP(null, null);
@@ -28,6 +28,15 @@ public enum NotificationType {
         this.customImage = customImage;
     }
 
-    public Set<Integer> getAnimations() { return animations; }
-    public String getCustomImage() { return customImage; }
+    public Set<Integer> getAnimations() {
+        return animations;
+    }
+
+    public String getCustomImage() {
+        return customImage;
+    }
+
+    boolean matchesAnimation(int animation) {
+        return animations != null && animations.contains(animation);
+    }
 }

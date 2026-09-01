@@ -23,26 +23,6 @@ public class Utils {
         log.debug("Skilling-notifications: " + anim);
     }
 
-    static boolean isInAnimation(NotificationType notificationType, Client client) {
-        if(notificationType == NotificationType.NONE) return false;
-        return isInAnimation(notificationType.getAnimations(), client);
-    }
-
-    static boolean isInAnimation(int animationID, Client client) {
-        Player player = client.getLocalPlayer();
-        if(player == null) return false;
-        int anim = player.getAnimation();
-        return anim == animationID;
-    }
-
-    static boolean isInAnimation(Set<Integer> animations, Client client) {
-        if(animations == null) return false;
-        Player player = client.getLocalPlayer();
-        if(player == null) return false;
-        int anim = player.getAnimation();
-        return animations.contains(anim);
-    }
-
     public static int getStringWidth(Graphics graphics, String text) {
         FontMetrics metrics = graphics.getFontMetrics();
         return metrics.stringWidth(text);

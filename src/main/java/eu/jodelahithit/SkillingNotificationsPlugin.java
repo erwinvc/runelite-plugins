@@ -109,30 +109,32 @@ public class SkillingNotificationsPlugin extends Plugin {
 
     @Subscribe
     public void onClientTick(ClientTick clientTick) {
-        //Utils.printAnimation(client);
         if (!config.enabled()) return;
-        for (NotificationType notificationType : selectedNotificationTypes) {
-            if (Utils.isInAnimation(notificationType, client)) session.updateInstant(notificationType);
-        }
+
         Player player = client.getLocalPlayer();
-        if (player != null) {
-            LocalPoint playerLocation = player.getLocalLocation();
-            if (!playerLocation.equals(lastPlayerLocation)) {
-                session.updateWalkingInstant();
-            }
-            lastPlayerLocation = playerLocation;
+        if (player == null) {
+            lastPlayerLocation = null;
+            return;
         }
 
-        if (Utils.isInAnimation(Constants.SAILING_HELM_ANIMATIONS, client)) {
+        int animation = player.getAnimation();
+
+        for (NotificationType notificationType : selectedNotificationTypes) {
+            if (notificationType.matchesAnimation(animation)) session.updateInstant(notificationType);
+        }
+
+        LocalPoint playerLocation = player.getLocalLocation();
+        if (!playerLocation.equals(lastPlayerLocation)) {
+            session.updateWalkingInstant();
+        }
+
+        lastPlayerLocation = playerLocation;
+
+        if (Constants.SAILING_HELM_ANIMATIONS.contains(animation)) {
             session.updateSailingInstant();
         }
 
-        if (Utils.isInAnimation(Constants.MONKEY_ANIMS, client)) {
-            session.updateInstant(NotificationType.MANIACALMONKEYS);
-        }
-
-        boolean isInManiacalMonkeysArea = isInManiacalMonkeysArea();
-        if (!isInManiacalMonkeysArea || lastManiacalMonkeyRockTile != null) {
+        if (!isInManiacalMonkeysArea() || lastManiacalMonkeyRockTile != null) {
             session.updateInstant(NotificationType.MANIACALMONKEYS);
         }
     }
