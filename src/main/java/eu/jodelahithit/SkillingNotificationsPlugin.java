@@ -48,6 +48,7 @@ public class SkillingNotificationsPlugin extends Plugin {
     private List<NotificationType> selectedNotificationTypes = new ArrayList<>();
     private Tile lastManiacalMonkeyRockTile = null;
     private int[] xpCache;
+    private boolean xpCacheInitialized;
     private int lastBananas = 0;
 
     @Getter
@@ -88,10 +89,9 @@ public class SkillingNotificationsPlugin extends Plugin {
         overlayManager.add(overlay);
         session = new Session(this);
 
-        Skill[] skills = Skill.values();
-        xpCache = new int[skills.length];
-        for (Skill s : skills) {
-            xpCache[s.ordinal()] = client.getSkillExperience(s);
+        xpCache = new int[Skill.values().length];
+        if (client.getGameState() == GameState.LOGGED_IN) {
+            initializeXpCache();
         }
     }
 
@@ -147,19 +147,31 @@ public class SkillingNotificationsPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onStatChanged(StatChanged statChanged) {
-        Skill skill = statChanged.getSkill();
-        int currentXp = statChanged.getXp();
-        int skillIdx = skill.ordinal();
-        int cachedXP = xpCache[skillIdx];
-        if (cachedXP < currentXp) {
-            int xpAmount = currentXp - cachedXP;
-            if (xpAmount >= config.customXPValue()) {
-                session.updateInstant(NotificationType.CUSTOMXP);
-            }
+    public void onGameStateChanged(GameStateChanged event) {
+        if (event.getGameState() == GameState.LOGGED_IN) {
+            initializeXpCache();
+        }
+    }
+
+    @Subscribe
+    public void onStatChanged(StatChanged event) {
+        Skill skill = event.getSkill();
+        int skillIndex = skill.ordinal();
+        int currentXp = event.getXp();
+
+        if (!xpCacheInitialized) {
+            xpCache[skillIndex] = currentXp;
+            return;
         }
 
-        xpCache[skillIdx] = currentXp;
+        int previousXp = xpCache[skillIndex];
+        int gainedXp = currentXp - previousXp;
+
+        if (gainedXp >= config.customXPValue()) {
+            session.updateInstant(NotificationType.CUSTOMXP);
+        }
+
+        xpCache[skillIndex] = currentXp;
     }
 
     @Subscribe
@@ -233,6 +245,14 @@ public class SkillingNotificationsPlugin extends Plugin {
             session.updateInstant(NotificationType.MANIACALMONKEYS);
 
         lastBananas = bananas;
+    }
+
+    private void initializeXpCache() {
+        for (Skill skill : Skill.values()) {
+            xpCache[skill.ordinal()] = client.getSkillExperience(skill);
+        }
+
+        xpCacheInitialized = true;
     }
 
     boolean areSelectedSkillsActive() {
