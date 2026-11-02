@@ -106,6 +106,14 @@ public interface SkillingNotificationsConfig extends Config {
     )
     default boolean notificationSound() {return false;}
 
+    @ConfigItem(
+            keyName = "runeLiteNotification",
+            name = "RuneLite notification",
+            description = "Sends a RuneLite notification when the player is idle. Uses RuneLite's notification settings, including a custom sound, tray popup and flash",
+            position = 9
+    )
+    default Notification runeLiteNotification() {return Notification.OFF;}
+
     @ConfigSection(
             name = "Selected skills",
             description = "Set the selected skills that will cause a notification when idling",

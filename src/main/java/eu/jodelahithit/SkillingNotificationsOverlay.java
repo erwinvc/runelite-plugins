@@ -2,6 +2,7 @@ package eu.jodelahithit;
 
 import com.google.inject.Inject;
 import net.runelite.api.Client;
+import net.runelite.client.Notifier;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -18,6 +19,7 @@ public class SkillingNotificationsOverlay extends Overlay {
     private final Client client;
     private final SkillingNotificationsPlugin plugin;
     private final SkillingNotificationsConfig config;
+    private final Notifier notifier;
 
     private long lastFadeTime = System.currentTimeMillis();
     private long notificationUntil = 0;
@@ -28,13 +30,14 @@ public class SkillingNotificationsOverlay extends Overlay {
     private boolean flashReadyPreviously;
 
     @Inject
-    private SkillingNotificationsOverlay(Client client, SkillingNotificationsPlugin plugin, SkillingNotificationsConfig config) {
+    private SkillingNotificationsOverlay(Client client, SkillingNotificationsPlugin plugin, SkillingNotificationsConfig config, Notifier notifier) {
         super(plugin);
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ABOVE_SCENE);
         this.client = client;
         this.plugin = plugin;
         this.config = config;
+        this.notifier = notifier;
     }
 
     float fadeValue = 0.0f;
@@ -69,8 +72,11 @@ public class SkillingNotificationsOverlay extends Overlay {
         Color fadedColor = getFadedColor(config.overlayColor(), shouldRender);
         Color textColor = ColorUtil.colorLerp(Color.white, config.overlayColor(), TEXT_COLOR_LERP);
 
-        if (config.notificationSound() && shouldRender && !previousShouldRender) {
-            Toolkit.getDefaultToolkit().beep();
+        if (shouldRender && !previousShouldRender) {
+            if (config.notificationSound()) {
+                Toolkit.getDefaultToolkit().beep();
+            }
+            notifier.notify(config.runeLiteNotification(), "Skilling notification: you are idle");
         }
         previousShouldRender = shouldRender;
 
